@@ -203,10 +203,10 @@ FROM
 	
 select
   instance_id as "Unique Asset Identifier",
-  'Yes' as "Virtual",
-  CASE
+    CASE
     WHEN "IP_Type" = 'Private' THEN "IP"
   END as "IPv4 or IPv6 Address",
+  'Yes' as "Virtual",
   CASE
     WHEN "IP_Type" = 'Public' THEN "IP"
   END as "Public",
@@ -526,6 +526,9 @@ SELECT
 FROM
 	aws_vpc_nat_gateway
 	left join vpc_list ON vpc_list.vpc_id = aws_vpc_nat_gateway.vpc_id
+	
+
+
 	
 
 
@@ -761,10 +764,10 @@ FROM
 	
 select
   instance_id as "Unique Asset Identifier",
-  'Yes' as "Virtual",
-  CASE
+    CASE
     WHEN "IP_Type" = 'Private' THEN "IP"
   END as "IPv4 or IPv6 Address",
+  'Yes' as "Virtual",
   CASE
     WHEN "IP_Type" = 'Public' THEN "IP"
   END as "Public",
@@ -1084,6 +1087,9 @@ SELECT
 FROM
 	aws_vpc_nat_gateway
 	left join vpc_list ON vpc_list.vpc_id = aws_vpc_nat_gateway.vpc_id
+	
+
+
 	
 
 
