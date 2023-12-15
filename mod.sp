@@ -1,4 +1,4 @@
-mod "dash_intro" {
-  title = "Dashboard Introduction"
+mod "FedRAMP-Inventory-Dashboard" {
+  title = "FedRAMP Inventory Dashboard"
 }
 

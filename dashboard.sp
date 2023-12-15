@@ -1,8 +1,6 @@
-dashboard "Dash_Tutorial" {
-	title = "Dashboard Prototype"
-	text {
-		value = "Testing Text Functionality"
-}
+dashboard "FedRAMP-Inventory-Dashboard" {
+	title = "FedRAMP Inventory Dashboard"
+
 
   
 
@@ -75,7 +73,7 @@ WITH vpc_list as (
       '' as "Patch Level",
       '' as "Diagram Label",
       tags ->> 'Comments' as "Comments",
-      '' as "Serial #/Asset Tag#",
+      arn as "Serial #/Asset Tag#",
       CASE
         WHEN vpc_list.title is null THEN aws_fsx_file_system.vpc_id
         ELSE vpc_list.title
@@ -110,7 +108,7 @@ WITH vpc_list as (
 	'' as "Patch Level",
 	'' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
-	'' as "Serial #/Asset Tag#",
+	arn as "Serial #/Asset Tag#",
   CASE
     WHEN vpc_list.title is null THEN aws_ec2_application_load_balancer.vpc_id
     ELSE vpc_list.title
@@ -149,7 +147,7 @@ CASE
 	'' as "Patch Level",
 	'' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
-	'' as "Serial #/Asset Tag#",
+	arn as "Serial #/Asset Tag#",
  CASE
     WHEN vpc_list.title is null THEN aws_ec2_classic_load_balancer.vpc_id
     ELSE vpc_list.title
@@ -378,7 +376,7 @@ FROM
 	'' as "Patch Level",
 	'' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
-	'' as "Serial #/Asset Tag#",
+	arn as "Serial #/Asset Tag#",
   CASE
     WHEN vpc_list.title is null THEN aws_opensearch_domain.vpc_options ->> 'VPCId'
     ELSE vpc_list.title
@@ -532,9 +530,8 @@ FROM
 	
 
 
-
   EOQ
-  title = "Aggregated AWS Fedramp Inventory"
+  title = "AWS Fedramp Inventory"
   width = 8
 }
 
@@ -565,7 +562,7 @@ FROM
 
 
 table {
-  title = "All AWS Inventory "
+  title = "AWS FedRAMP Inventory "
   width = 8
 
   sql   = <<-EOQ
@@ -636,7 +633,7 @@ WITH vpc_list as (
       '' as "Patch Level",
       '' as "Diagram Label",
       tags ->> 'Comments' as "Comments",
-      '' as "Serial #/Asset Tag#",
+      arn as "Serial #/Asset Tag#",
       CASE
         WHEN vpc_list.title is null THEN aws_fsx_file_system.vpc_id
         ELSE vpc_list.title
@@ -671,7 +668,7 @@ WITH vpc_list as (
 	'' as "Patch Level",
 	'' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
-	'' as "Serial #/Asset Tag#",
+	arn as "Serial #/Asset Tag#",
   CASE
     WHEN vpc_list.title is null THEN aws_ec2_application_load_balancer.vpc_id
     ELSE vpc_list.title
@@ -710,7 +707,7 @@ CASE
 	'' as "Patch Level",
 	'' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
-	'' as "Serial #/Asset Tag#",
+	arn as "Serial #/Asset Tag#",
  CASE
     WHEN vpc_list.title is null THEN aws_ec2_classic_load_balancer.vpc_id
     ELSE vpc_list.title
@@ -939,7 +936,7 @@ FROM
 	'' as "Patch Level",
 	'' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
-	'' as "Serial #/Asset Tag#",
+	arn as "Serial #/Asset Tag#",
   CASE
     WHEN vpc_list.title is null THEN aws_opensearch_domain.vpc_options ->> 'VPCId'
     ELSE vpc_list.title
@@ -1087,6 +1084,9 @@ SELECT
 FROM
 	aws_vpc_nat_gateway
 	left join vpc_list ON vpc_list.vpc_id = aws_vpc_nat_gateway.vpc_id
+	
+
+
 	
 
 
