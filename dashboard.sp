@@ -61,8 +61,8 @@ WITH vpc_list as (
       dns_name as "DNS Name or URL",
       '' as "NetBIOS Name",
       '' as "MAC Address",
-      tags ->> 'Authenticated Scan' as "Authenticated Scan",
-      tags ->> 'Baseline Configuration Name' as "Baseline Configuration Name",
+      tags ->> 'Authenticated_Scan' as "Authenticated Scan",
+      tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
       '' as "OS Name and Version",
       '' as "Location",
       'AWS ALB' as "Asset Type",
@@ -78,8 +78,8 @@ WITH vpc_list as (
         WHEN vpc_list.title is null THEN aws_fsx_file_system.vpc_id
         ELSE vpc_list.title
       END as "VLAN/Network ID",
-      tags ->> 'Application Owner' as "Application Owner",
-      tags ->> 'System Owner' as "System Owner",
+      tags ->> 'Application_Owner' as "Application Owner",
+      tags ->> 'System_Owner' as "System Owner",
       tags ->> 'Function' as "Function",
       '' as "End-of-Life"
     FROM
@@ -92,12 +92,13 @@ WITH vpc_list as (
 	aws_ec2_application_load_balancer.title as "Unique Asset Identifier",
 	'' as "IPv4 or IPv6 Address",
 		'Yes' as "Virtual",
-	'' as "Public",
+    tags ->> 'Public' as "Public",		
+	--'' as "Public",
 	dns_name as "DNS Name or URL",
 	'' as "NetBIOS Name",
 	'' as "MAC Address",
-	tags ->> 'Authenticated Scan' as "Authenticated Scan",
-	tags ->> 'Baseline Configuration Name' as "Baseline Configuration Name",
+	tags ->> 'Authenticated_Scan' as "Authenticated Scan",
+	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
 	'' as "OS Name and Version",
 	'' as "Location",
 	'AWS ALB' as "Asset Type",
@@ -113,8 +114,8 @@ WITH vpc_list as (
     WHEN vpc_list.title is null THEN aws_ec2_application_load_balancer.vpc_id
     ELSE vpc_list.title
   END as "VLAN/Network ID",
-	tags ->> 'Application Owner' as "Application Owner",
-	tags ->> 'System Owner' as "System Owner",
+	tags ->> 'Application_Owner' as "Application Owner",
+	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
 	'' as "End-of-Life"
 FROM
@@ -128,15 +129,17 @@ SELECT
 	aws_ec2_classic_load_balancer.title as "Unique Asset Identifier",
 	'' as "IPv4 or IPv6 Address",
 	'Yes' as "Virtual",
-CASE
-	WHEN scheme = 'internet-facing' THEN 'Yes'
-		ELSE 'No'
-	END as "Public",
+	    tags ->> 'Public' as "Public",		
+
+--CASE
+--	WHEN scheme = 'internet-facing' THEN 'Yes'
+--		ELSE 'No'
+--	END as "Public",
 	dns_name as "DNS Name or URL",
 	'' as "NetBIOS Name",
 	'' as "MAC Address",
-	tags ->> 'Authenticated Scan' as "Authenticated Scan",
-	tags ->> 'Baseline Configuration Name' as "Baseline Configuration Name",
+	tags ->> 'Authenticated_Scan' as "Authenticated Scan",
+	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
 	'' as "OS Name and Version",
 	'' as "Location",
 	'AWS Load Balancer' as "Asset Type",
@@ -152,8 +155,8 @@ CASE
     WHEN vpc_list.title is null THEN aws_ec2_classic_load_balancer.vpc_id
     ELSE vpc_list.title
  END as "VLAN/Network ID",
-	tags ->> 'Application Owner' as "Application Owner",
-	tags ->> 'System Owner' as "System Owner",
+	tags ->> 'Application_Owner' as "Application Owner",
+	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
 	'' as "End-of-Life"
 FROM
@@ -167,12 +170,13 @@ FROM
 	aws_directory_service_directory.title as "Unique Asset Identifier",
 	jsonb_array_elements_text(dns_ip_addrs) "IPv4 or IPv6 Address",
 	'Yes' as "Virtual",
-	'' as "Public",
+    tags ->> 'Public' as "Public",		
+	--'' as "Public",
 	access_url as "DNS Name or URL",
 	directory_id as "NetBIOS Name",
 	'' as "MAC Address",
-	tags ->> 'Authenticated Scan' as "Authenticated Scan",
-	tags ->> 'Baseline Configuration Name' as "Baseline Configuration Name",
+	tags ->> 'Authenticated_Scan' as "Authenticated Scan",
+	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
 	'' as "OS Name and Version",
 	region as "Location",
 	'AWS Directory Service' as "Asset Type",
@@ -188,8 +192,8 @@ FROM
     WHEN vpc_list.title is null THEN vpc_settings ->> 'VpcId'
     ELSE vpc_list.title
   END as "VLAN/Network ID",
-	tags ->> 'System Owner' as "System Administrator/Owner",
-	tags ->> 'Application Owner' as "Application Administrator/Owner",
+	tags ->> 'System_Owner' as "System Administrator/Owner",
+	tags ->> 'Application_Owner' as "Application Administrator/Owner",
 	tags ->> 'Function' as "Function",
 	'' as "End-of-Life"
 FROM
@@ -205,14 +209,15 @@ select
     WHEN "IP_Type" = 'Private' THEN "IP"
   END as "IPv4 or IPv6 Address",
   'Yes' as "Virtual",
-  CASE
-    WHEN "IP_Type" = 'Public' THEN "IP"
-  END as "Public",
+      tags ->> 'Public' as "Public",		
+  --CASE
+    --WHEN "IP_Type" = 'Public' THEN "IP"
+  --END as "Public",
   private_dns_name as "DNS Name or URL",
   aws_ec2_instance.title as "NetBIOS Name",
   '' as "MAC Address",
-  tags ->> 'Authenticated Scan' as "Authenticated Scan",
-  tags ->> 'Baseline Configuration Name' as "Baseline Configuration Name",
+  tags ->> 'Authenticated_Scan' as "Authenticated Scan",
+  tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
   platform_details as "OS Name and Version",
   placement_availability_zone as "Location",
   'AWS EC2' as "Asset Type",
@@ -228,8 +233,8 @@ select
   tags ->> 'Comments' as "Comments",
   aws_ec2_instance.arn as "Serial #/Asset Tag#",
   vpc_list.title as "VLAN/Network ID",
-  tags ->> 'Application Owner' as "Application Owner",
-  tags ->> 'System Owner' as "System Owner",
+  tags ->> 'Application_Owner' as "Application Owner",
+  tags ->> 'System_Owner' as "System Owner",
   tags ->> 'Function' as "Function",
   '' as "End-of-Life"
 from
@@ -249,9 +254,10 @@ where
     WHEN all_ips."IP_Type" = 'Private' THEN "IP"
   END as "IPv4 or IPv6 Address",
   	'Yes' as "Virtual",
-  CASE
-    WHEN all_ips."IP_Type" = 'Public' THEN all_ips."IP"
-  END as "Public",
+	'' as "Public",
+  --CASE
+    --WHEN all_ips."IP_Type" = 'Public' THEN all_ips."IP"
+  --END as "Public",
   "DNS Name or URL",
   '' as "NetBIOS Name",
   '' as "MAC Address",
@@ -285,12 +291,13 @@ UNION
 	aws_vpc_internet_gateway.title as "Unique Asset Identifier",
 	'' as "IPv4 or IPv6 Address",
 	'Yes' as "Virtual",
-	'' as "Public",
+    tags ->> 'Public' as "Public",		
+	--'' as "Public",
 	'' as "DNS Name or URL",
 	internet_gateway_id as "NetBIOS Name",
 	'' as "MAC Address",
-	tags ->> 'Authenticated Scan' as "Authenticated Scan",
-	tags ->> 'Baseline Configuration Name' as "Baseline Configuration Name",
+	tags ->> 'Authenticated_Scan' as "Authenticated Scan",
+	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
 	'' as "OS Name and Version",
 	region as "Location",
 	'AWS Internet Gateway' as "Asset Type",
@@ -306,8 +313,8 @@ UNION
 		WHEN vpc_list.title is null THEN aws_vpc_internet_gateway.attachments -> 0 ->> 'VpcId'
 		ELSE vpc_list.title
 	END as "VLAN/Network ID",
-	tags ->> 'Application Owner' as "Application Owner",
-	tags ->> 'System Owner' as "System Owner",
+	tags ->> 'Application_Owner' as "Application Owner",
+	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
 	'' as "End-of-Life"
 FROM
@@ -322,12 +329,13 @@ SELECT
 	aws_ec2_network_load_balancer.title as "Unique Asset Identifier",
 	'' as "IPv4 or IPv6 Address",
 	'Yes' as "Virtual",
-	'' as "Public",
+    tags ->> 'Public' as "Public",		
+	--'' as "Public",
 	dns_name as "DNS Name or URL",
 	'' as "NetBIOS Name",
 	'' as "MAC Address",
-	tags ->> 'Authenticated Scan' as "Authenticated Scan",
-	tags ->> 'Baseline Configuration Name' as "Baseline Configuration Name",
+	tags ->> 'Authenticated_Scan' as "Authenticated Scan",
+	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
 	'' as "OS Name and Version",
 	region as "Location",
 	'AWS NLB' as "Asset Type",
@@ -343,8 +351,8 @@ SELECT
 		WHEN vpc_list.title is null THEN aws_ec2_network_load_balancer.vpc_id
 		ELSE vpc_list.title
 	END as "VLAN/Network ID",
-	tags ->> 'Application Owner' as "Application Owner",
-	tags ->> 'System Owner' as "System Owner",
+	tags ->> 'Application_Owner' as "Application Owner",
+	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
 	'' as "End-of-Life"
 FROM
@@ -359,13 +367,14 @@ FROM
 	aws_opensearch_domain.title as "Unique Asset Identifier",
 	'' as "IPv4 or IPv6 Address",
 	  	'Yes' as "Virtual",
-	'' as "Public",
+    tags ->> 'Public' as "Public",		
+	--'' as "Public",
 	--dns_name as "DNS Name or URL",
 	'' as "DNS Name or URL",
 	'' as "NetBIOS Name",
 	'' as "MAC Address",
-	tags ->> 'Authenticated Scan' as "Authenticated Scan",
-	tags ->> 'Baseline Configuration Name' as "Baseline Configuration Name",
+	tags ->> 'Authenticated_Scan' as "Authenticated Scan",
+	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
 	'' as "OS Name and Version",
 	'' as "Location",
 	'AWS ALB' as "Asset Type",
@@ -381,8 +390,8 @@ FROM
     WHEN vpc_list.title is null THEN aws_opensearch_domain.vpc_options ->> 'VPCId'
     ELSE vpc_list.title
   END as "VLAN/Network ID",
-	tags ->> 'Application Owner' as "Application Owner",
-	tags ->> 'System Owner' as "System Owner",
+	tags ->> 'Application_Owner' as "Application Owner",
+	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
 	'' as "End-of-Life"
 FROM
@@ -396,12 +405,13 @@ SELECT
 	text(db_instance_identifier) as "Unique Asset Identifier",
 	'' as "IPv4 or IPv6 Address",
 	'Yes' as "Virtual",
-	'publicly_accessible' as "Public",
+    tags ->> 'Public' as "Public",			
+	--'publicly_accessible' as "Public",
 	endpoint_address || ':' || endpoint_port as "DNS Name or URL",
 	resource_id as "NetBIOS Name",
 	'' as "MAC Address",
-	tags ->> 'Authenticated Scan' as "Authenticated Scan",
-	tags ->> 'Baseline Configuration Name' as "Baseline Configuration Name",
+	tags ->> 'Authenticated_Scan' as "Authenticated Scan",
+	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
 	'' as "OS Name and Version",
 	availability_zone as "Location",
 	'AWS RDS' as "Asset Type",
@@ -414,8 +424,8 @@ SELECT
 	tags ->> 'Comments' as "Comments",
 	arn as "Serial #/Asset Tag#",
 	db_subnet_group_name as "VLAN/Network ID",
-	tags ->> 'Application Owner' as "Application Owner",
-	tags ->> 'System Owner' as "System Owner",
+	tags ->> 'Application_Owner' as "Application Owner",
+	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
 	'' as "End-of-Life"
 FROM
@@ -427,12 +437,13 @@ SELECT
 	title as "Unique Asset Identifier",
 	'' as "IPv4 or IPv6 Address",
 	'Yes' as "Virtual",
-	'' as "Public",
+    tags ->> 'Public' as "Public",		
+	--'' as "Public",
 	'' as "DNS Name or URL",
 	'' as "NetBIOS Name",
 	'' as "MAC Address",
-	tags ->> 'Authenticated Scan' as "Authenticated Scan",
-	tags ->> 'Baseline Configuration Name' as "Baseline Configuration Name",
+	tags ->> 'Authenticated_Scan' as "Authenticated Scan",
+	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
 	'' as "OS Name and Version",
 	region as "Location",
 	'AWS S3' as "Asset Type",
@@ -445,8 +456,8 @@ SELECT
 	tags ->> 'Comments' as "Comments",
 	arn as "Serial #/Asset Tag#",
 	'' as "VLAN/Network ID",
-	tags ->> 'Application Owner' as "Application Owner",
-	tags ->> 'System Owner' as "System Owner",
+	tags ->> 'Application_Owner' as "Application Owner",
+	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
 	'' as "End-of-Life"
 FROM
@@ -459,12 +470,13 @@ SELECT
 	aws_vpc_subnet.title as "Unique Asset Identifier",
 	text(cidr_block) as "IPv4 or IPv6 Address",
 	'Yes' as "Virtual",
-	'' as "Public",
+    tags ->> 'Public' as "Public",		
+	--'' as "Public",
 	'' as "DNS Name or URL",
 	subnet_id as "NetBIOS Name",
 	'' as "MAC Address",
-	tags ->> 'Authenticated Scan' as "Authenticated Scan",
-	tags ->> 'Baseline Configuration Name' as "Baseline Configuration Name",
+	tags ->> 'Authenticated_Scan' as "Authenticated Scan",
+	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
 	'' as "OS Name and Version",
 	availability_zone as "Location",
 	'AWS VPC Subnet' as "Asset Type",
@@ -480,8 +492,8 @@ SELECT
     WHEN vpc_list.title is null THEN aws_vpc_subnet.vpc_id
     ELSE vpc_list.title
  END as "VLAN/Network ID",
-	tags ->> 'Application Owner' as "Application Owner",
-	tags ->> 'System Owner' as "System Owner",
+	tags ->> 'Application_Owner' as "Application Owner",
+	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
 	'' as "End-of-Life"
 FROM
@@ -496,12 +508,13 @@ SELECT
 	aws_vpc_nat_gateway.title as "Unique Asset Identifier",
 	'' as "IPv4 or IPv6 Address",
 	'Yes' as "Virtual",
-	'' as "Public",
+    tags ->> 'Public' as "Public",		
+	--'' as "Public",
 	'' as "DNS Name or URL",
 	nat_gateway_id as "NetBIOS Name",
 	'' as "MAC Address",
-	tags ->> 'Authenticated Scan' as "Authenticated Scan",
-	tags ->> 'Baseline Configuration Name' as "Baseline Configuration Name",
+	tags ->> 'Authenticated_Scan' as "Authenticated Scan",
+	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
 	'' as "OS Name and Version",
 	region as "Location",
 	'AWS VPC NAT Gateway' as "Asset Type",
@@ -517,8 +530,8 @@ SELECT
     WHEN vpc_list.title is null THEN aws_vpc_nat_gateway.vpc_id
     ELSE vpc_list.title
  END as "VLAN/Network ID",
-	tags ->> 'Application Owner' as "Application Owner",
-	tags ->> 'System Owner' as "System Owner",
+	tags ->> 'Application_Owner' as "Application Owner",
+	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
 	'' as "End-of-Life"
 FROM
@@ -621,8 +634,8 @@ WITH vpc_list as (
       dns_name as "DNS Name or URL",
       '' as "NetBIOS Name",
       '' as "MAC Address",
-      tags ->> 'Authenticated Scan' as "Authenticated Scan",
-      tags ->> 'Baseline Configuration Name' as "Baseline Configuration Name",
+      tags ->> 'Authenticated_Scan' as "Authenticated Scan",
+      tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
       '' as "OS Name and Version",
       '' as "Location",
       'AWS ALB' as "Asset Type",
@@ -638,8 +651,8 @@ WITH vpc_list as (
         WHEN vpc_list.title is null THEN aws_fsx_file_system.vpc_id
         ELSE vpc_list.title
       END as "VLAN/Network ID",
-      tags ->> 'Application Owner' as "Application Owner",
-      tags ->> 'System Owner' as "System Owner",
+      tags ->> 'Application_Owner' as "Application Owner",
+      tags ->> 'System_Owner' as "System Owner",
       tags ->> 'Function' as "Function",
       '' as "End-of-Life"
     FROM
@@ -652,12 +665,13 @@ WITH vpc_list as (
 	aws_ec2_application_load_balancer.title as "Unique Asset Identifier",
 	'' as "IPv4 or IPv6 Address",
 		'Yes' as "Virtual",
-	'' as "Public",
+    tags ->> 'Public' as "Public",		
+	--'' as "Public",
 	dns_name as "DNS Name or URL",
 	'' as "NetBIOS Name",
 	'' as "MAC Address",
-	tags ->> 'Authenticated Scan' as "Authenticated Scan",
-	tags ->> 'Baseline Configuration Name' as "Baseline Configuration Name",
+	tags ->> 'Authenticated_Scan' as "Authenticated Scan",
+	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
 	'' as "OS Name and Version",
 	'' as "Location",
 	'AWS ALB' as "Asset Type",
@@ -673,8 +687,8 @@ WITH vpc_list as (
     WHEN vpc_list.title is null THEN aws_ec2_application_load_balancer.vpc_id
     ELSE vpc_list.title
   END as "VLAN/Network ID",
-	tags ->> 'Application Owner' as "Application Owner",
-	tags ->> 'System Owner' as "System Owner",
+	tags ->> 'Application_Owner' as "Application Owner",
+	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
 	'' as "End-of-Life"
 FROM
@@ -688,15 +702,17 @@ SELECT
 	aws_ec2_classic_load_balancer.title as "Unique Asset Identifier",
 	'' as "IPv4 or IPv6 Address",
 	'Yes' as "Virtual",
-CASE
-	WHEN scheme = 'internet-facing' THEN 'Yes'
-		ELSE 'No'
-	END as "Public",
+	    tags ->> 'Public' as "Public",		
+
+--CASE
+--	WHEN scheme = 'internet-facing' THEN 'Yes'
+--		ELSE 'No'
+--	END as "Public",
 	dns_name as "DNS Name or URL",
 	'' as "NetBIOS Name",
 	'' as "MAC Address",
-	tags ->> 'Authenticated Scan' as "Authenticated Scan",
-	tags ->> 'Baseline Configuration Name' as "Baseline Configuration Name",
+	tags ->> 'Authenticated_Scan' as "Authenticated Scan",
+	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
 	'' as "OS Name and Version",
 	'' as "Location",
 	'AWS Load Balancer' as "Asset Type",
@@ -712,8 +728,8 @@ CASE
     WHEN vpc_list.title is null THEN aws_ec2_classic_load_balancer.vpc_id
     ELSE vpc_list.title
  END as "VLAN/Network ID",
-	tags ->> 'Application Owner' as "Application Owner",
-	tags ->> 'System Owner' as "System Owner",
+	tags ->> 'Application_Owner' as "Application Owner",
+	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
 	'' as "End-of-Life"
 FROM
@@ -727,12 +743,13 @@ FROM
 	aws_directory_service_directory.title as "Unique Asset Identifier",
 	jsonb_array_elements_text(dns_ip_addrs) "IPv4 or IPv6 Address",
 	'Yes' as "Virtual",
-	'' as "Public",
+    tags ->> 'Public' as "Public",		
+	--'' as "Public",
 	access_url as "DNS Name or URL",
 	directory_id as "NetBIOS Name",
 	'' as "MAC Address",
-	tags ->> 'Authenticated Scan' as "Authenticated Scan",
-	tags ->> 'Baseline Configuration Name' as "Baseline Configuration Name",
+	tags ->> 'Authenticated_Scan' as "Authenticated Scan",
+	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
 	'' as "OS Name and Version",
 	region as "Location",
 	'AWS Directory Service' as "Asset Type",
@@ -748,8 +765,8 @@ FROM
     WHEN vpc_list.title is null THEN vpc_settings ->> 'VpcId'
     ELSE vpc_list.title
   END as "VLAN/Network ID",
-	tags ->> 'System Owner' as "System Administrator/Owner",
-	tags ->> 'Application Owner' as "Application Administrator/Owner",
+	tags ->> 'System_Owner' as "System Administrator/Owner",
+	tags ->> 'Application_Owner' as "Application Administrator/Owner",
 	tags ->> 'Function' as "Function",
 	'' as "End-of-Life"
 FROM
@@ -765,14 +782,15 @@ select
     WHEN "IP_Type" = 'Private' THEN "IP"
   END as "IPv4 or IPv6 Address",
   'Yes' as "Virtual",
-  CASE
-    WHEN "IP_Type" = 'Public' THEN "IP"
-  END as "Public",
+      tags ->> 'Public' as "Public",		
+  --CASE
+    --WHEN "IP_Type" = 'Public' THEN "IP"
+  --END as "Public",
   private_dns_name as "DNS Name or URL",
   aws_ec2_instance.title as "NetBIOS Name",
   '' as "MAC Address",
-  tags ->> 'Authenticated Scan' as "Authenticated Scan",
-  tags ->> 'Baseline Configuration Name' as "Baseline Configuration Name",
+  tags ->> 'Authenticated_Scan' as "Authenticated Scan",
+  tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
   platform_details as "OS Name and Version",
   placement_availability_zone as "Location",
   'AWS EC2' as "Asset Type",
@@ -788,8 +806,8 @@ select
   tags ->> 'Comments' as "Comments",
   aws_ec2_instance.arn as "Serial #/Asset Tag#",
   vpc_list.title as "VLAN/Network ID",
-  tags ->> 'Application Owner' as "Application Owner",
-  tags ->> 'System Owner' as "System Owner",
+  tags ->> 'Application_Owner' as "Application Owner",
+  tags ->> 'System_Owner' as "System Owner",
   tags ->> 'Function' as "Function",
   '' as "End-of-Life"
 from
@@ -809,9 +827,10 @@ where
     WHEN all_ips."IP_Type" = 'Private' THEN "IP"
   END as "IPv4 or IPv6 Address",
   	'Yes' as "Virtual",
-  CASE
-    WHEN all_ips."IP_Type" = 'Public' THEN all_ips."IP"
-  END as "Public",
+	'' as "Public",
+  --CASE
+    --WHEN all_ips."IP_Type" = 'Public' THEN all_ips."IP"
+  --END as "Public",
   "DNS Name or URL",
   '' as "NetBIOS Name",
   '' as "MAC Address",
@@ -845,12 +864,13 @@ UNION
 	aws_vpc_internet_gateway.title as "Unique Asset Identifier",
 	'' as "IPv4 or IPv6 Address",
 	'Yes' as "Virtual",
-	'' as "Public",
+    tags ->> 'Public' as "Public",		
+	--'' as "Public",
 	'' as "DNS Name or URL",
 	internet_gateway_id as "NetBIOS Name",
 	'' as "MAC Address",
-	tags ->> 'Authenticated Scan' as "Authenticated Scan",
-	tags ->> 'Baseline Configuration Name' as "Baseline Configuration Name",
+	tags ->> 'Authenticated_Scan' as "Authenticated Scan",
+	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
 	'' as "OS Name and Version",
 	region as "Location",
 	'AWS Internet Gateway' as "Asset Type",
@@ -866,8 +886,8 @@ UNION
 		WHEN vpc_list.title is null THEN aws_vpc_internet_gateway.attachments -> 0 ->> 'VpcId'
 		ELSE vpc_list.title
 	END as "VLAN/Network ID",
-	tags ->> 'Application Owner' as "Application Owner",
-	tags ->> 'System Owner' as "System Owner",
+	tags ->> 'Application_Owner' as "Application Owner",
+	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
 	'' as "End-of-Life"
 FROM
@@ -882,12 +902,13 @@ SELECT
 	aws_ec2_network_load_balancer.title as "Unique Asset Identifier",
 	'' as "IPv4 or IPv6 Address",
 	'Yes' as "Virtual",
-	'' as "Public",
+    tags ->> 'Public' as "Public",		
+	--'' as "Public",
 	dns_name as "DNS Name or URL",
 	'' as "NetBIOS Name",
 	'' as "MAC Address",
-	tags ->> 'Authenticated Scan' as "Authenticated Scan",
-	tags ->> 'Baseline Configuration Name' as "Baseline Configuration Name",
+	tags ->> 'Authenticated_Scan' as "Authenticated Scan",
+	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
 	'' as "OS Name and Version",
 	region as "Location",
 	'AWS NLB' as "Asset Type",
@@ -903,8 +924,8 @@ SELECT
 		WHEN vpc_list.title is null THEN aws_ec2_network_load_balancer.vpc_id
 		ELSE vpc_list.title
 	END as "VLAN/Network ID",
-	tags ->> 'Application Owner' as "Application Owner",
-	tags ->> 'System Owner' as "System Owner",
+	tags ->> 'Application_Owner' as "Application Owner",
+	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
 	'' as "End-of-Life"
 FROM
@@ -919,13 +940,14 @@ FROM
 	aws_opensearch_domain.title as "Unique Asset Identifier",
 	'' as "IPv4 or IPv6 Address",
 	  	'Yes' as "Virtual",
-	'' as "Public",
+    tags ->> 'Public' as "Public",		
+	--'' as "Public",
 	--dns_name as "DNS Name or URL",
 	'' as "DNS Name or URL",
 	'' as "NetBIOS Name",
 	'' as "MAC Address",
-	tags ->> 'Authenticated Scan' as "Authenticated Scan",
-	tags ->> 'Baseline Configuration Name' as "Baseline Configuration Name",
+	tags ->> 'Authenticated_Scan' as "Authenticated Scan",
+	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
 	'' as "OS Name and Version",
 	'' as "Location",
 	'AWS ALB' as "Asset Type",
@@ -941,8 +963,8 @@ FROM
     WHEN vpc_list.title is null THEN aws_opensearch_domain.vpc_options ->> 'VPCId'
     ELSE vpc_list.title
   END as "VLAN/Network ID",
-	tags ->> 'Application Owner' as "Application Owner",
-	tags ->> 'System Owner' as "System Owner",
+	tags ->> 'Application_Owner' as "Application Owner",
+	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
 	'' as "End-of-Life"
 FROM
@@ -956,12 +978,13 @@ SELECT
 	text(db_instance_identifier) as "Unique Asset Identifier",
 	'' as "IPv4 or IPv6 Address",
 	'Yes' as "Virtual",
-	'publicly_accessible' as "Public",
+    tags ->> 'Public' as "Public",			
+	--'publicly_accessible' as "Public",
 	endpoint_address || ':' || endpoint_port as "DNS Name or URL",
 	resource_id as "NetBIOS Name",
 	'' as "MAC Address",
-	tags ->> 'Authenticated Scan' as "Authenticated Scan",
-	tags ->> 'Baseline Configuration Name' as "Baseline Configuration Name",
+	tags ->> 'Authenticated_Scan' as "Authenticated Scan",
+	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
 	'' as "OS Name and Version",
 	availability_zone as "Location",
 	'AWS RDS' as "Asset Type",
@@ -974,8 +997,8 @@ SELECT
 	tags ->> 'Comments' as "Comments",
 	arn as "Serial #/Asset Tag#",
 	db_subnet_group_name as "VLAN/Network ID",
-	tags ->> 'Application Owner' as "Application Owner",
-	tags ->> 'System Owner' as "System Owner",
+	tags ->> 'Application_Owner' as "Application Owner",
+	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
 	'' as "End-of-Life"
 FROM
@@ -987,12 +1010,13 @@ SELECT
 	title as "Unique Asset Identifier",
 	'' as "IPv4 or IPv6 Address",
 	'Yes' as "Virtual",
-	'' as "Public",
+    tags ->> 'Public' as "Public",		
+	--'' as "Public",
 	'' as "DNS Name or URL",
 	'' as "NetBIOS Name",
 	'' as "MAC Address",
-	tags ->> 'Authenticated Scan' as "Authenticated Scan",
-	tags ->> 'Baseline Configuration Name' as "Baseline Configuration Name",
+	tags ->> 'Authenticated_Scan' as "Authenticated Scan",
+	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
 	'' as "OS Name and Version",
 	region as "Location",
 	'AWS S3' as "Asset Type",
@@ -1005,8 +1029,8 @@ SELECT
 	tags ->> 'Comments' as "Comments",
 	arn as "Serial #/Asset Tag#",
 	'' as "VLAN/Network ID",
-	tags ->> 'Application Owner' as "Application Owner",
-	tags ->> 'System Owner' as "System Owner",
+	tags ->> 'Application_Owner' as "Application Owner",
+	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
 	'' as "End-of-Life"
 FROM
@@ -1019,12 +1043,13 @@ SELECT
 	aws_vpc_subnet.title as "Unique Asset Identifier",
 	text(cidr_block) as "IPv4 or IPv6 Address",
 	'Yes' as "Virtual",
-	'' as "Public",
+    tags ->> 'Public' as "Public",		
+	--'' as "Public",
 	'' as "DNS Name or URL",
 	subnet_id as "NetBIOS Name",
 	'' as "MAC Address",
-	tags ->> 'Authenticated Scan' as "Authenticated Scan",
-	tags ->> 'Baseline Configuration Name' as "Baseline Configuration Name",
+	tags ->> 'Authenticated_Scan' as "Authenticated Scan",
+	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
 	'' as "OS Name and Version",
 	availability_zone as "Location",
 	'AWS VPC Subnet' as "Asset Type",
@@ -1040,8 +1065,8 @@ SELECT
     WHEN vpc_list.title is null THEN aws_vpc_subnet.vpc_id
     ELSE vpc_list.title
  END as "VLAN/Network ID",
-	tags ->> 'Application Owner' as "Application Owner",
-	tags ->> 'System Owner' as "System Owner",
+	tags ->> 'Application_Owner' as "Application Owner",
+	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
 	'' as "End-of-Life"
 FROM
@@ -1056,12 +1081,13 @@ SELECT
 	aws_vpc_nat_gateway.title as "Unique Asset Identifier",
 	'' as "IPv4 or IPv6 Address",
 	'Yes' as "Virtual",
-	'' as "Public",
+    tags ->> 'Public' as "Public",		
+	--'' as "Public",
 	'' as "DNS Name or URL",
 	nat_gateway_id as "NetBIOS Name",
 	'' as "MAC Address",
-	tags ->> 'Authenticated Scan' as "Authenticated Scan",
-	tags ->> 'Baseline Configuration Name' as "Baseline Configuration Name",
+	tags ->> 'Authenticated_Scan' as "Authenticated Scan",
+	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
 	'' as "OS Name and Version",
 	region as "Location",
 	'AWS VPC NAT Gateway' as "Asset Type",
@@ -1077,18 +1103,13 @@ SELECT
     WHEN vpc_list.title is null THEN aws_vpc_nat_gateway.vpc_id
     ELSE vpc_list.title
  END as "VLAN/Network ID",
-	tags ->> 'Application Owner' as "Application Owner",
-	tags ->> 'System Owner' as "System Owner",
+	tags ->> 'Application_Owner' as "Application Owner",
+	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
 	'' as "End-of-Life"
 FROM
 	aws_vpc_nat_gateway
 	left join vpc_list ON vpc_list.vpc_id = aws_vpc_nat_gateway.vpc_id
-	
-
-
-	
-
 
 	
 
