@@ -1306,7 +1306,11 @@ FROM
 	UNION
 	
 select
-  instance_id as "Unique Asset Identifier",
+  --instance_id as "Unique Asset Identifier",
+      CASE
+    WHEN aws_ec2_instance.title is not null THEN aws_ec2_instance.title
+	ELSE instance_id
+  END as "Unique Asset Identifier",
     CASE
     WHEN "IP_Type" = 'Private' THEN "IP"
   END as "IPv4 or IPv6 Address",
@@ -1316,7 +1320,8 @@ select
     --WHEN "IP_Type" = 'Public' THEN "IP"
   --END as "Public",
   private_dns_name as "DNS Name or URL",
-  aws_ec2_instance.title as "NetBIOS Name",
+  '' as "NetBIOS Name",
+  --aws_ec2_instance.title as "NetBIOS Name",
   '' as "MAC Address",
   tags ->> 'Authenticated_Scan' as "Authenticated Scan",
   tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
@@ -1639,6 +1644,7 @@ SELECT
 FROM
 	aws_vpc_nat_gateway
 	left join vpc_list ON vpc_list.vpc_id = aws_vpc_nat_gateway.vpc_id
+
 	
 
 
@@ -1879,7 +1885,11 @@ FROM
 	UNION
 	
 select
-  instance_id as "Unique Asset Identifier",
+  --instance_id as "Unique Asset Identifier",
+      CASE
+    WHEN aws_ec2_instance.title is not null THEN aws_ec2_instance.title
+	ELSE instance_id
+  END as "Unique Asset Identifier",
     CASE
     WHEN "IP_Type" = 'Private' THEN "IP"
   END as "IPv4 or IPv6 Address",
@@ -1889,7 +1899,8 @@ select
     --WHEN "IP_Type" = 'Public' THEN "IP"
   --END as "Public",
   private_dns_name as "DNS Name or URL",
-  aws_ec2_instance.title as "NetBIOS Name",
+  '' as "NetBIOS Name",
+  --aws_ec2_instance.title as "NetBIOS Name",
   '' as "MAC Address",
   tags ->> 'Authenticated_Scan' as "Authenticated Scan",
   tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
