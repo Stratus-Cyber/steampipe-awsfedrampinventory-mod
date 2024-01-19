@@ -1167,7 +1167,7 @@ WITH vpc_list as (
       tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
       '' as "OS Name and Version",
       '' as "Location",
-      'AWS ALB' as "Asset Type",
+      'AWS FSX' as "Asset Type",
       '' as "Hardware Make/Model",
       '' as "In Latest Scan",
       '' as "Software/Database Vendor",
@@ -1269,13 +1269,18 @@ FROM
 	UNION
 	
 	SELECT
-	aws_directory_service_directory.title as "Unique Asset Identifier",
+	CASE
+    WHEN aws_directory_service_directory.title is null THEN directory_id
+    ELSE aws_directory_service_directory.title
+  END as "Unique Asset Identifier",
+	--aws_directory_service_directory.title as "Unique Asset Identifier",
 	jsonb_array_elements_text(dns_ip_addrs) "IPv4 or IPv6 Address",
 	'Yes' as "Virtual",
     tags ->> 'Public' as "Public",		
 	--'' as "Public",
 	access_url as "DNS Name or URL",
-	directory_id as "NetBIOS Name",
+	'' as "NetBIOS Name",
+	--directory_id as "NetBIOS Name",
 	'' as "MAC Address",
 	tags ->> 'Authenticated_Scan' as "Authenticated Scan",
 	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
@@ -1372,7 +1377,7 @@ where
   "Baseline Configuration Name",
   '' as "OS Name and Version",
   '' as "Location",
-  'AWS ALB' as "Asset Type",
+  'AWS FSX' as "Asset Type",
   '' as "Hardware Make/Model",
   '' as "In Latest Scan",
   '' as "Software/Database Vendor",
@@ -1394,40 +1399,45 @@ FROM
   --Internet Gateway
 UNION
 
- SELECT
-	aws_vpc_internet_gateway.title as "Unique Asset Identifier",
-	'' as "IPv4 or IPv6 Address",
-	'Yes' as "Virtual",
-    tags ->> 'Public' as "Public",		
-	--'' as "Public",
-	'' as "DNS Name or URL",
-	internet_gateway_id as "NetBIOS Name",
-	'' as "MAC Address",
-	tags ->> 'Authenticated_Scan' as "Authenticated Scan",
-	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
-	'' as "OS Name and Version",
-	region as "Location",
-	'AWS Internet Gateway' as "Asset Type",
-	'' as "Hardware Make/Model",
-	'' as "In Latest Scan",
-	'' as "Software/Database Vendor",
-	'' as "Software/Database Name & Version",
-	'' as "Patch Level",
-	'' as "Diagram Label",
-	tags ->> 'Comments' as "Comments",
-	jsonb_array_elements_text(akas) as "Serial #/Asset Tag#", 
-	CASE
-		WHEN vpc_list.title is null THEN aws_vpc_internet_gateway.attachments -> 0 ->> 'VpcId'
-		ELSE vpc_list.title
-	END as "VLAN/Network ID",
-	tags ->> 'Application_Owner' as "Application Owner",
-	tags ->> 'System_Owner' as "System Owner",
-	tags ->> 'Function' as "Function",
-	'' as "End-of-Life"
+SELECT
+  CASE
+    WHEN aws_vpc_internet_gateway.title is null THEN internet_gateway_id
+    ELSE aws_vpc_internet_gateway.title
+  END as "Unique Asset Identifier",
+  --aws_vpc_internet_gateway.title as "Unique Asset Identifier",
+  '' as "IPv4 or IPv6 Address",
+  'Yes' as "Virtual",
+  tags ->> 'Public' as "Public",
+  --'' as "Public",
+  '' as "DNS Name or URL",
+  --	internet_gateway_id as "NetBIOS Name",
+  '' as "NetBIOS Name",
+  '' as "MAC Address",
+  tags ->> 'Authenticated_Scan' as "Authenticated Scan",
+  tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
+  '' as "OS Name and Version",
+  region as "Location",
+  'AWS Internet Gateway' as "Asset Type",
+  '' as "Hardware Make/Model",
+  '' as "In Latest Scan",
+  '' as "Software/Database Vendor",
+  '' as "Software/Database Name & Version",
+  '' as "Patch Level",
+  '' as "Diagram Label",
+  tags ->> 'Comments' as "Comments",
+  jsonb_array_elements_text(akas) as "Serial #/Asset Tag#",
+  CASE
+    WHEN vpc_list.title is null THEN aws_vpc_internet_gateway.attachments -> 0 ->> 'VpcId'
+    ELSE vpc_list.title
+  END as "VLAN/Network ID",
+  tags ->> 'Application_Owner' as "Application Owner",
+  tags ->> 'System_Owner' as "System Owner",
+  tags ->> 'Function' as "Function",
+  '' as "End-of-Life"
 FROM
-	aws_vpc_internet_gateway
-	left join vpc_list ON vpc_list.vpc_id = aws_vpc_internet_gateway.attachments -> 0 ->> 'VpcId'
-	
+  aws_vpc_internet_gateway
+  left join vpc_list ON vpc_list.vpc_id = aws_vpc_internet_gateway.attachments -> 0 ->> 'VpcId'
+
 	--Network Load Balancer
 	
 	UNION
@@ -1484,7 +1494,7 @@ FROM
 	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
 	'' as "OS Name and Version",
 	'' as "Location",
-	'AWS ALB' as "Asset Type",
+	'AWS Open Search' as "Asset Type",
 	'' as "Hardware Make/Model",
 	'' as "In Latest Scan",
 	'' as "Software/Database Vendor",
@@ -1508,14 +1518,20 @@ FROM
 	-- RDS Fedramp inventory
 	
 	UNION
+
 SELECT
-	text(db_instance_identifier) as "Unique Asset Identifier",
+	  CASE
+    WHEN title is null THEN resource_id
+    ELSE title
+  END as "Unique Asset Identifier",
+	--text(db_instance_identifier) as "Unique Asset Identifier",
 	'' as "IPv4 or IPv6 Address",
 	'Yes' as "Virtual",
     tags ->> 'Public' as "Public",			
 	--'publicly_accessible' as "Public",
 	endpoint_address || ':' || endpoint_port as "DNS Name or URL",
-	resource_id as "NetBIOS Name",
+	--resource_id as "NetBIOS Name",
+		'' as "NetBIOS Name",
 	'' as "MAC Address",
 	tags ->> 'Authenticated_Scan' as "Authenticated Scan",
 	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
@@ -1573,14 +1589,20 @@ FROM
 -- Subnet VPC Inventory
 
 UNION
+
 SELECT
-	aws_vpc_subnet.title as "Unique Asset Identifier",
+	  CASE
+    WHEN aws_vpc_subnet.title is null THEN subnet_id
+    ELSE aws_vpc_subnet.title
+  END as "Unique Asset Identifier",
+	--aws_vpc_subnet.title as "Unique Asset Identifier",
 	text(cidr_block) as "IPv4 or IPv6 Address",
 	'Yes' as "Virtual",
     tags ->> 'Public' as "Public",		
 	--'' as "Public",
 	'' as "DNS Name or URL",
-	subnet_id as "NetBIOS Name",
+	--subnet_id as "NetBIOS Name",
+	'' as "NetBIOS Name",
 	'' as "MAC Address",
 	tags ->> 'Authenticated_Scan' as "Authenticated Scan",
 	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
@@ -1612,13 +1634,18 @@ FROM
 UNION
 
 SELECT
-	aws_vpc_nat_gateway.title as "Unique Asset Identifier",
+	  CASE
+    WHEN aws_vpc_nat_gateway.title is null THEN nat_gateway_id
+    ELSE aws_vpc_nat_gateway.title
+  END as "Unique Asset Identifier",
+	--aws_vpc_nat_gateway.title as "Unique Asset Identifier",
 	'' as "IPv4 or IPv6 Address",
 	'Yes' as "Virtual",
     tags ->> 'Public' as "Public",		
 	--'' as "Public",
 	'' as "DNS Name or URL",
-	nat_gateway_id as "NetBIOS Name",
+	--nat_gateway_id as "NetBIOS Name",
+		'' as "NetBIOS Name",
 	'' as "MAC Address",
 	tags ->> 'Authenticated_Scan' as "Authenticated Scan",
 	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
@@ -1644,6 +1671,7 @@ SELECT
 FROM
 	aws_vpc_nat_gateway
 	left join vpc_list ON vpc_list.vpc_id = aws_vpc_nat_gateway.vpc_id
+
 
 	
 
@@ -1746,7 +1774,7 @@ WITH vpc_list as (
       tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
       '' as "OS Name and Version",
       '' as "Location",
-      'AWS ALB' as "Asset Type",
+      'AWS FSX' as "Asset Type",
       '' as "Hardware Make/Model",
       '' as "In Latest Scan",
       '' as "Software/Database Vendor",
@@ -1848,13 +1876,18 @@ FROM
 	UNION
 	
 	SELECT
-	aws_directory_service_directory.title as "Unique Asset Identifier",
+	CASE
+    WHEN aws_directory_service_directory.title is null THEN directory_id
+    ELSE aws_directory_service_directory.title
+  END as "Unique Asset Identifier",
+	--aws_directory_service_directory.title as "Unique Asset Identifier",
 	jsonb_array_elements_text(dns_ip_addrs) "IPv4 or IPv6 Address",
 	'Yes' as "Virtual",
     tags ->> 'Public' as "Public",		
 	--'' as "Public",
 	access_url as "DNS Name or URL",
-	directory_id as "NetBIOS Name",
+	'' as "NetBIOS Name",
+	--directory_id as "NetBIOS Name",
 	'' as "MAC Address",
 	tags ->> 'Authenticated_Scan' as "Authenticated Scan",
 	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
@@ -1951,7 +1984,7 @@ where
   "Baseline Configuration Name",
   '' as "OS Name and Version",
   '' as "Location",
-  'AWS ALB' as "Asset Type",
+  'AWS FSX' as "Asset Type",
   '' as "Hardware Make/Model",
   '' as "In Latest Scan",
   '' as "Software/Database Vendor",
@@ -1973,40 +2006,45 @@ FROM
   --Internet Gateway
 UNION
 
- SELECT
-	aws_vpc_internet_gateway.title as "Unique Asset Identifier",
-	'' as "IPv4 or IPv6 Address",
-	'Yes' as "Virtual",
-    tags ->> 'Public' as "Public",		
-	--'' as "Public",
-	'' as "DNS Name or URL",
-	internet_gateway_id as "NetBIOS Name",
-	'' as "MAC Address",
-	tags ->> 'Authenticated_Scan' as "Authenticated Scan",
-	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
-	'' as "OS Name and Version",
-	region as "Location",
-	'AWS Internet Gateway' as "Asset Type",
-	'' as "Hardware Make/Model",
-	'' as "In Latest Scan",
-	'' as "Software/Database Vendor",
-	'' as "Software/Database Name & Version",
-	'' as "Patch Level",
-	'' as "Diagram Label",
-	tags ->> 'Comments' as "Comments",
-	jsonb_array_elements_text(akas) as "Serial #/Asset Tag#", 
-	CASE
-		WHEN vpc_list.title is null THEN aws_vpc_internet_gateway.attachments -> 0 ->> 'VpcId'
-		ELSE vpc_list.title
-	END as "VLAN/Network ID",
-	tags ->> 'Application_Owner' as "Application Owner",
-	tags ->> 'System_Owner' as "System Owner",
-	tags ->> 'Function' as "Function",
-	'' as "End-of-Life"
+SELECT
+  CASE
+    WHEN aws_vpc_internet_gateway.title is null THEN internet_gateway_id
+    ELSE aws_vpc_internet_gateway.title
+  END as "Unique Asset Identifier",
+  --aws_vpc_internet_gateway.title as "Unique Asset Identifier",
+  '' as "IPv4 or IPv6 Address",
+  'Yes' as "Virtual",
+  tags ->> 'Public' as "Public",
+  --'' as "Public",
+  '' as "DNS Name or URL",
+  --	internet_gateway_id as "NetBIOS Name",
+  '' as "NetBIOS Name",
+  '' as "MAC Address",
+  tags ->> 'Authenticated_Scan' as "Authenticated Scan",
+  tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
+  '' as "OS Name and Version",
+  region as "Location",
+  'AWS Internet Gateway' as "Asset Type",
+  '' as "Hardware Make/Model",
+  '' as "In Latest Scan",
+  '' as "Software/Database Vendor",
+  '' as "Software/Database Name & Version",
+  '' as "Patch Level",
+  '' as "Diagram Label",
+  tags ->> 'Comments' as "Comments",
+  jsonb_array_elements_text(akas) as "Serial #/Asset Tag#",
+  CASE
+    WHEN vpc_list.title is null THEN aws_vpc_internet_gateway.attachments -> 0 ->> 'VpcId'
+    ELSE vpc_list.title
+  END as "VLAN/Network ID",
+  tags ->> 'Application_Owner' as "Application Owner",
+  tags ->> 'System_Owner' as "System Owner",
+  tags ->> 'Function' as "Function",
+  '' as "End-of-Life"
 FROM
-	aws_vpc_internet_gateway
-	left join vpc_list ON vpc_list.vpc_id = aws_vpc_internet_gateway.attachments -> 0 ->> 'VpcId'
-	
+  aws_vpc_internet_gateway
+  left join vpc_list ON vpc_list.vpc_id = aws_vpc_internet_gateway.attachments -> 0 ->> 'VpcId'
+
 	--Network Load Balancer
 	
 	UNION
@@ -2063,7 +2101,7 @@ FROM
 	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
 	'' as "OS Name and Version",
 	'' as "Location",
-	'AWS ALB' as "Asset Type",
+	'AWS Open Search' as "Asset Type",
 	'' as "Hardware Make/Model",
 	'' as "In Latest Scan",
 	'' as "Software/Database Vendor",
@@ -2087,14 +2125,20 @@ FROM
 	-- RDS Fedramp inventory
 	
 	UNION
+
 SELECT
-	text(db_instance_identifier) as "Unique Asset Identifier",
+	  CASE
+    WHEN title is null THEN resource_id
+    ELSE title
+  END as "Unique Asset Identifier",
+	--text(db_instance_identifier) as "Unique Asset Identifier",
 	'' as "IPv4 or IPv6 Address",
 	'Yes' as "Virtual",
     tags ->> 'Public' as "Public",			
 	--'publicly_accessible' as "Public",
 	endpoint_address || ':' || endpoint_port as "DNS Name or URL",
-	resource_id as "NetBIOS Name",
+	--resource_id as "NetBIOS Name",
+		'' as "NetBIOS Name",
 	'' as "MAC Address",
 	tags ->> 'Authenticated_Scan' as "Authenticated Scan",
 	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
@@ -2152,14 +2196,20 @@ FROM
 -- Subnet VPC Inventory
 
 UNION
+
 SELECT
-	aws_vpc_subnet.title as "Unique Asset Identifier",
+	  CASE
+    WHEN aws_vpc_subnet.title is null THEN subnet_id
+    ELSE aws_vpc_subnet.title
+  END as "Unique Asset Identifier",
+	--aws_vpc_subnet.title as "Unique Asset Identifier",
 	text(cidr_block) as "IPv4 or IPv6 Address",
 	'Yes' as "Virtual",
     tags ->> 'Public' as "Public",		
 	--'' as "Public",
 	'' as "DNS Name or URL",
-	subnet_id as "NetBIOS Name",
+	--subnet_id as "NetBIOS Name",
+	'' as "NetBIOS Name",
 	'' as "MAC Address",
 	tags ->> 'Authenticated_Scan' as "Authenticated Scan",
 	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
@@ -2191,13 +2241,18 @@ FROM
 UNION
 
 SELECT
-	aws_vpc_nat_gateway.title as "Unique Asset Identifier",
+	  CASE
+    WHEN aws_vpc_nat_gateway.title is null THEN nat_gateway_id
+    ELSE aws_vpc_nat_gateway.title
+  END as "Unique Asset Identifier",
+	--aws_vpc_nat_gateway.title as "Unique Asset Identifier",
 	'' as "IPv4 or IPv6 Address",
 	'Yes' as "Virtual",
     tags ->> 'Public' as "Public",		
 	--'' as "Public",
 	'' as "DNS Name or URL",
-	nat_gateway_id as "NetBIOS Name",
+	--nat_gateway_id as "NetBIOS Name",
+		'' as "NetBIOS Name",
 	'' as "MAC Address",
 	tags ->> 'Authenticated_Scan' as "Authenticated Scan",
 	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
@@ -2231,4 +2286,3 @@ FROM
 }
 
 }
-
