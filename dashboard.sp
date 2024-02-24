@@ -1317,7 +1317,7 @@ select
 	ELSE instance_id
   END as "Unique Asset Identifier",
     CASE
-    WHEN "IP_Type" = 'Private' THEN "IP"
+    WHEN "IP_Type" = 'Private' or "IP_Type" = 'Public' THEN "IP"
   END as "IPv4 or IPv6 Address",
   'Yes' as "Virtual",
       tags ->> 'Public' as "Public",		
@@ -1363,7 +1363,7 @@ where
 	SELECT
   "Unique Asset Identifier",
   CASE
-    WHEN all_ips."IP_Type" = 'Private' THEN "IP"
+    WHEN all_ips."IP_Type" = 'Private' or all_ips."IP_Type" = 'Public' THEN "IP"
   END as "IPv4 or IPv6 Address",
   	'Yes' as "Virtual",
 	'' as "Public",
@@ -1673,6 +1673,7 @@ FROM
 	left join vpc_list ON vpc_list.vpc_id = aws_vpc_nat_gateway.vpc_id
 
 
+
 	
 
 
@@ -1924,7 +1925,7 @@ select
 	ELSE instance_id
   END as "Unique Asset Identifier",
     CASE
-    WHEN "IP_Type" = 'Private' THEN "IP"
+    WHEN "IP_Type" = 'Private' or "IP_Type" = 'Public' THEN "IP"
   END as "IPv4 or IPv6 Address",
   'Yes' as "Virtual",
       tags ->> 'Public' as "Public",		
@@ -1970,7 +1971,7 @@ where
 	SELECT
   "Unique Asset Identifier",
   CASE
-    WHEN all_ips."IP_Type" = 'Private' THEN "IP"
+    WHEN all_ips."IP_Type" = 'Private' or all_ips."IP_Type" = 'Public' THEN "IP"
   END as "IPv4 or IPv6 Address",
   	'Yes' as "Virtual",
 	'' as "Public",
