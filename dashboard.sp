@@ -1173,7 +1173,7 @@ WITH vpc_list as (
       '' as "Software/Database Vendor",
       '' as "Software/Database Name & Version",
       '' as "Patch Level",
-      '' as "Diagram Label",
+      tags ->> 'Diagram_Label' as "Diagram Label",
       tags ->> 'Comments' as "Comments",
       arn as "Serial #/Asset Tag#",
       CASE
@@ -1183,7 +1183,7 @@ WITH vpc_list as (
       tags ->> 'Application_Owner' as "Application Owner",
       tags ->> 'System_Owner' as "System Owner",
       tags ->> 'Function' as "Function",
-      '' as "End-of-Life"
+      tags ->> 'End_Of_life' as "End-of-Life"
     FROM
       aws_fsx_file_system
       INNER join vpc_list ON vpc_list.vpc_id = aws_fsx_file_system.vpc_id
@@ -1209,7 +1209,7 @@ WITH vpc_list as (
 	'' as "Software/Database Vendor",
 	'' as "Software/Database Name & Version",
 	'' as "Patch Level",
-	'' as "Diagram Label",
+	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
 	arn as "Serial #/Asset Tag#",
   CASE
@@ -1219,7 +1219,7 @@ WITH vpc_list as (
 	tags ->> 'Application_Owner' as "Application Owner",
 	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
-	'' as "End-of-Life"
+	tags ->> 'End_Of_life' as "End-of-Life"
 FROM
 	aws_ec2_application_load_balancer
 	left join vpc_list ON vpc_list.vpc_id = aws_ec2_application_load_balancer.vpc_id
@@ -1250,7 +1250,7 @@ SELECT
 	'' as "Software/Database Vendor",
 	'' as "Software/Database Name & Version",
 	'' as "Patch Level",
-	'' as "Diagram Label",
+	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
 	arn as "Serial #/Asset Tag#",
  CASE
@@ -1260,7 +1260,7 @@ SELECT
 	tags ->> 'Application_Owner' as "Application Owner",
 	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
-	'' as "End-of-Life"
+	tags ->> 'End_Of_life' as "End-of-Life"
 FROM
 	aws_ec2_classic_load_balancer
 	left join vpc_list ON vpc_list.vpc_id = aws_ec2_classic_load_balancer.vpc_id
@@ -1292,7 +1292,7 @@ FROM
 	type as "Software/Database Vendor",
 	edition as "Software/Database Name & Version",
 	'' as "Patch Level",
-	'' as "Diagram Label",
+	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
 	arn as "Serial #/Asset Tag#",
   CASE
@@ -1302,7 +1302,7 @@ FROM
 	tags ->> 'System_Owner' as "System Administrator/Owner",
 	tags ->> 'Application_Owner' as "Application Administrator/Owner",
 	tags ->> 'Function' as "Function",
-	'' as "End-of-Life"
+	tags ->> 'End_Of_life' as "End-of-Life"
 FROM
 	aws_directory_service_directory
 	left join vpc_list ON vpc_list.vpc_id = aws_directory_service_directory.vpc_settings ->> 'VpcId'
@@ -1341,14 +1341,14 @@ select
   END as "Software/Database Vendor",
   '' as "Software/Database Name & Version",
   '' as "Patch Level",
-  '' as "Diagram Label",
+  tags ->> 'Diagram_Label' as "Diagram Label",
   tags ->> 'Comments' as "Comments",
   aws_ec2_instance.arn as "Serial #/Asset Tag#",
   vpc_list.title as "VLAN/Network ID",
   tags ->> 'Application_Owner' as "Application Owner",
   tags ->> 'System_Owner' as "System Owner",
   tags ->> 'Function' as "Function",
-  '' as "End-of-Life"
+  tags ->> 'End_Of_life' as "End-of-Life"
 from
   aws_ec2_instance
   left join all_ips ON all_ips.attached_instance_id = aws_ec2_instance.instance_id
@@ -1423,7 +1423,7 @@ SELECT
   '' as "Software/Database Vendor",
   '' as "Software/Database Name & Version",
   '' as "Patch Level",
-  '' as "Diagram Label",
+  tags ->> 'Diagram_Label' as "Diagram Label",
   tags ->> 'Comments' as "Comments",
   jsonb_array_elements_text(akas) as "Serial #/Asset Tag#",
   CASE
@@ -1433,7 +1433,7 @@ SELECT
   tags ->> 'Application_Owner' as "Application Owner",
   tags ->> 'System_Owner' as "System Owner",
   tags ->> 'Function' as "Function",
-  '' as "End-of-Life"
+  tags ->> 'End_Of_life' as "End-of-Life"
 FROM
   aws_vpc_internet_gateway
   left join vpc_list ON vpc_list.vpc_id = aws_vpc_internet_gateway.attachments -> 0 ->> 'VpcId'
@@ -1461,7 +1461,7 @@ SELECT
 	'' as "Software/Database Vendor",
 	'' as "Software/Database Name & Version",
 	'' as "Patch Level",
-	'' as "Diagram Label",
+	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
 	jsonb_array_elements_text(akas) as "Serial #/Asset Tag#",
 	CASE
@@ -1471,7 +1471,7 @@ SELECT
 	tags ->> 'Application_Owner' as "Application Owner",
 	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
-	'' as "End-of-Life"
+	tags ->> 'End_Of_life' as "End-of-Life"
 FROM
 	aws_ec2_network_load_balancer
 	left join vpc_list ON vpc_list.vpc_id = aws_ec2_network_load_balancer.vpc_id
@@ -1500,7 +1500,7 @@ FROM
 	'' as "Software/Database Vendor",
 	'' as "Software/Database Name & Version",
 	'' as "Patch Level",
-	'' as "Diagram Label",
+	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
 	arn as "Serial #/Asset Tag#",
   CASE
@@ -1510,7 +1510,7 @@ FROM
 	tags ->> 'Application_Owner' as "Application Owner",
 	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
-	'' as "End-of-Life"
+	tags ->> 'End_Of_life' as "End-of-Life"
 FROM
 	aws_opensearch_domain
 	left join vpc_list ON vpc_list.vpc_id = aws_opensearch_domain.vpc_options ->> 'VPCId'
@@ -1543,14 +1543,14 @@ SELECT
 	engine as "Software/Database Vendor",
 	engine_version as "Software/Database Name & Version",
 	'' as "Patch Level",
-	'' as "Diagram Label",
+	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
 	arn as "Serial #/Asset Tag#",
 	db_subnet_group_name as "VLAN/Network ID",
 	tags ->> 'Application_Owner' as "Application Owner",
 	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
-	'' as "End-of-Life"
+	tags ->> 'End_Of_life' as "End-of-Life"
 FROM
 	aws_rds_db_instance	
 	
@@ -1575,14 +1575,14 @@ SELECT
 	'' as "Software/Database Vendor",
 	'' as "Software/Database Name & Version",
 	'' as "Patch Level",
-	'' as "Diagram Label",
+	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
 	arn as "Serial #/Asset Tag#",
 	'' as "VLAN/Network ID",
 	tags ->> 'Application_Owner' as "Application Owner",
 	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
-	'' as "End-of-Life"
+	tags ->> 'End_Of_life' as "End-of-Life"
 FROM
 	aws_s3_bucket	
 	
@@ -1614,7 +1614,7 @@ SELECT
 	'' as "Software/Database Vendor",
 	'' as "Software/Database Name & Version",
 	'' as "Patch Level",
-	'' as "Diagram Label",
+	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
 	subnet_arn as "Serial #/Asset Tag#",
  CASE
@@ -1624,7 +1624,7 @@ SELECT
 	tags ->> 'Application_Owner' as "Application Owner",
 	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
-	'' as "End-of-Life"
+	tags ->> 'End_Of_life' as "End-of-Life"
 FROM
 	aws_vpc_subnet
 	left join vpc_list ON vpc_list.vpc_id = aws_vpc_subnet.vpc_id
@@ -1657,7 +1657,7 @@ SELECT
 	'' as "Software/Database Vendor",
 	'' as "Software/Database Name & Version",
 	'' as "Patch Level",
-	'' as "Diagram Label",
+	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
 	arn as "Serial #/Asset Tag#",
  CASE
@@ -1667,10 +1667,11 @@ SELECT
 	tags ->> 'Application_Owner' as "Application Owner",
 	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
-	'' as "End-of-Life"
+	tags ->> 'End_Of_life' as "End-of-Life"
 FROM
 	aws_vpc_nat_gateway
 	left join vpc_list ON vpc_list.vpc_id = aws_vpc_nat_gateway.vpc_id
+
 
 
 
@@ -1781,7 +1782,7 @@ WITH vpc_list as (
       '' as "Software/Database Vendor",
       '' as "Software/Database Name & Version",
       '' as "Patch Level",
-      '' as "Diagram Label",
+      tags ->> 'Diagram_Label' as "Diagram Label",
       tags ->> 'Comments' as "Comments",
       arn as "Serial #/Asset Tag#",
       CASE
@@ -1791,7 +1792,7 @@ WITH vpc_list as (
       tags ->> 'Application_Owner' as "Application Owner",
       tags ->> 'System_Owner' as "System Owner",
       tags ->> 'Function' as "Function",
-      '' as "End-of-Life"
+      tags ->> 'End_Of_life' as "End-of-Life"
     FROM
       aws_fsx_file_system
       INNER join vpc_list ON vpc_list.vpc_id = aws_fsx_file_system.vpc_id
@@ -1817,7 +1818,7 @@ WITH vpc_list as (
 	'' as "Software/Database Vendor",
 	'' as "Software/Database Name & Version",
 	'' as "Patch Level",
-	'' as "Diagram Label",
+	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
 	arn as "Serial #/Asset Tag#",
   CASE
@@ -1827,7 +1828,7 @@ WITH vpc_list as (
 	tags ->> 'Application_Owner' as "Application Owner",
 	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
-	'' as "End-of-Life"
+	tags ->> 'End_Of_life' as "End-of-Life"
 FROM
 	aws_ec2_application_load_balancer
 	left join vpc_list ON vpc_list.vpc_id = aws_ec2_application_load_balancer.vpc_id
@@ -1858,7 +1859,7 @@ SELECT
 	'' as "Software/Database Vendor",
 	'' as "Software/Database Name & Version",
 	'' as "Patch Level",
-	'' as "Diagram Label",
+	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
 	arn as "Serial #/Asset Tag#",
  CASE
@@ -1868,7 +1869,7 @@ SELECT
 	tags ->> 'Application_Owner' as "Application Owner",
 	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
-	'' as "End-of-Life"
+	tags ->> 'End_Of_life' as "End-of-Life"
 FROM
 	aws_ec2_classic_load_balancer
 	left join vpc_list ON vpc_list.vpc_id = aws_ec2_classic_load_balancer.vpc_id
@@ -1900,7 +1901,7 @@ FROM
 	type as "Software/Database Vendor",
 	edition as "Software/Database Name & Version",
 	'' as "Patch Level",
-	'' as "Diagram Label",
+	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
 	arn as "Serial #/Asset Tag#",
   CASE
@@ -1910,7 +1911,7 @@ FROM
 	tags ->> 'System_Owner' as "System Administrator/Owner",
 	tags ->> 'Application_Owner' as "Application Administrator/Owner",
 	tags ->> 'Function' as "Function",
-	'' as "End-of-Life"
+	tags ->> 'End_Of_life' as "End-of-Life"
 FROM
 	aws_directory_service_directory
 	left join vpc_list ON vpc_list.vpc_id = aws_directory_service_directory.vpc_settings ->> 'VpcId'
@@ -1949,14 +1950,14 @@ select
   END as "Software/Database Vendor",
   '' as "Software/Database Name & Version",
   '' as "Patch Level",
-  '' as "Diagram Label",
+  tags ->> 'Diagram_Label' as "Diagram Label",
   tags ->> 'Comments' as "Comments",
   aws_ec2_instance.arn as "Serial #/Asset Tag#",
   vpc_list.title as "VLAN/Network ID",
   tags ->> 'Application_Owner' as "Application Owner",
   tags ->> 'System_Owner' as "System Owner",
   tags ->> 'Function' as "Function",
-  '' as "End-of-Life"
+  tags ->> 'End_Of_life' as "End-of-Life"
 from
   aws_ec2_instance
   left join all_ips ON all_ips.attached_instance_id = aws_ec2_instance.instance_id
@@ -2031,7 +2032,7 @@ SELECT
   '' as "Software/Database Vendor",
   '' as "Software/Database Name & Version",
   '' as "Patch Level",
-  '' as "Diagram Label",
+  tags ->> 'Diagram_Label' as "Diagram Label",
   tags ->> 'Comments' as "Comments",
   jsonb_array_elements_text(akas) as "Serial #/Asset Tag#",
   CASE
@@ -2041,7 +2042,7 @@ SELECT
   tags ->> 'Application_Owner' as "Application Owner",
   tags ->> 'System_Owner' as "System Owner",
   tags ->> 'Function' as "Function",
-  '' as "End-of-Life"
+  tags ->> 'End_Of_life' as "End-of-Life"
 FROM
   aws_vpc_internet_gateway
   left join vpc_list ON vpc_list.vpc_id = aws_vpc_internet_gateway.attachments -> 0 ->> 'VpcId'
@@ -2069,7 +2070,7 @@ SELECT
 	'' as "Software/Database Vendor",
 	'' as "Software/Database Name & Version",
 	'' as "Patch Level",
-	'' as "Diagram Label",
+	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
 	jsonb_array_elements_text(akas) as "Serial #/Asset Tag#",
 	CASE
@@ -2079,7 +2080,7 @@ SELECT
 	tags ->> 'Application_Owner' as "Application Owner",
 	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
-	'' as "End-of-Life"
+	tags ->> 'End_Of_life' as "End-of-Life"
 FROM
 	aws_ec2_network_load_balancer
 	left join vpc_list ON vpc_list.vpc_id = aws_ec2_network_load_balancer.vpc_id
@@ -2108,7 +2109,7 @@ FROM
 	'' as "Software/Database Vendor",
 	'' as "Software/Database Name & Version",
 	'' as "Patch Level",
-	'' as "Diagram Label",
+	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
 	arn as "Serial #/Asset Tag#",
   CASE
@@ -2118,7 +2119,7 @@ FROM
 	tags ->> 'Application_Owner' as "Application Owner",
 	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
-	'' as "End-of-Life"
+	tags ->> 'End_Of_life' as "End-of-Life"
 FROM
 	aws_opensearch_domain
 	left join vpc_list ON vpc_list.vpc_id = aws_opensearch_domain.vpc_options ->> 'VPCId'
@@ -2151,14 +2152,14 @@ SELECT
 	engine as "Software/Database Vendor",
 	engine_version as "Software/Database Name & Version",
 	'' as "Patch Level",
-	'' as "Diagram Label",
+	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
 	arn as "Serial #/Asset Tag#",
 	db_subnet_group_name as "VLAN/Network ID",
 	tags ->> 'Application_Owner' as "Application Owner",
 	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
-	'' as "End-of-Life"
+	tags ->> 'End_Of_life' as "End-of-Life"
 FROM
 	aws_rds_db_instance	
 	
@@ -2183,14 +2184,14 @@ SELECT
 	'' as "Software/Database Vendor",
 	'' as "Software/Database Name & Version",
 	'' as "Patch Level",
-	'' as "Diagram Label",
+	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
 	arn as "Serial #/Asset Tag#",
 	'' as "VLAN/Network ID",
 	tags ->> 'Application_Owner' as "Application Owner",
 	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
-	'' as "End-of-Life"
+	tags ->> 'End_Of_life' as "End-of-Life"
 FROM
 	aws_s3_bucket	
 	
@@ -2222,7 +2223,7 @@ SELECT
 	'' as "Software/Database Vendor",
 	'' as "Software/Database Name & Version",
 	'' as "Patch Level",
-	'' as "Diagram Label",
+	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
 	subnet_arn as "Serial #/Asset Tag#",
  CASE
@@ -2232,7 +2233,7 @@ SELECT
 	tags ->> 'Application_Owner' as "Application Owner",
 	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
-	'' as "End-of-Life"
+	tags ->> 'End_Of_life' as "End-of-Life"
 FROM
 	aws_vpc_subnet
 	left join vpc_list ON vpc_list.vpc_id = aws_vpc_subnet.vpc_id
@@ -2265,7 +2266,7 @@ SELECT
 	'' as "Software/Database Vendor",
 	'' as "Software/Database Name & Version",
 	'' as "Patch Level",
-	'' as "Diagram Label",
+	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
 	arn as "Serial #/Asset Tag#",
  CASE
@@ -2275,10 +2276,11 @@ SELECT
 	tags ->> 'Application_Owner' as "Application Owner",
 	tags ->> 'System_Owner' as "System Owner",
 	tags ->> 'Function' as "Function",
-	'' as "End-of-Life"
+	tags ->> 'End_Of_life' as "End-of-Life"
 FROM
 	aws_vpc_nat_gateway
 	left join vpc_list ON vpc_list.vpc_id = aws_vpc_nat_gateway.vpc_id
+
 
 	
 
