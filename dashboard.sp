@@ -1170,8 +1170,14 @@ WITH vpc_list as (
       'AWS FSX' as "Asset Type",
       '' as "Hardware Make/Model",
       '' as "In Latest Scan",
-      '' as "Software/Database Vendor",
-      '' as "Software/Database Name & Version",
+    CASE
+        WHEN (tags ->> 'Software_Vendor' IS NOT NULL AND tags ->> 'Software_Vendor' != '') THEN tags ->> 'Software_Vendor'
+        ELSE ''
+    END as "Software/Database Vendor",	
+    CASE
+        WHEN (tags ->> 'Software_Version' IS NOT NULL AND tags ->> 'Software_Version' != '') THEN tags ->> 'Software_Version'
+        ELSE ''
+    END as "Software/Database Name & Version",		
       '' as "Patch Level",
       tags ->> 'Diagram_Label' as "Diagram Label",
       tags ->> 'Comments' as "Comments",
@@ -1187,7 +1193,17 @@ WITH vpc_list as (
     FROM
       aws_fsx_file_system
       INNER join vpc_list ON vpc_list.vpc_id = aws_fsx_file_system.vpc_id
-  )
+  ),
+  
+  images as (
+select
+  *,
+	jsonb_array_elements_text(image_tags) as "image_tag"
+from
+  aws_ecr_image
+
+)  
+  
   
   --Application Load Balancer
   SELECT
@@ -1206,8 +1222,14 @@ WITH vpc_list as (
 	'AWS ALB' as "Asset Type",
 	'' as "Hardware Make/Model",
 	'' as "In Latest Scan",
-	'' as "Software/Database Vendor",
-	'' as "Software/Database Name & Version",
+    CASE
+        WHEN (tags ->> 'Software_Vendor' IS NOT NULL AND tags ->> 'Software_Vendor' != '') THEN tags ->> 'Software_Vendor'
+        ELSE ''
+    END as "Software/Database Vendor",	
+    CASE
+        WHEN (tags ->> 'Software_Version' IS NOT NULL AND tags ->> 'Software_Version' != '') THEN tags ->> 'Software_Version'
+        ELSE ''
+    END as "Software/Database Name & Version",		
 	'' as "Patch Level",
 	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
@@ -1247,8 +1269,14 @@ SELECT
 	'AWS Load Balancer' as "Asset Type",
 	'' as "Hardware Make/Model",
 	'' as "In Latest Scan",
-	'' as "Software/Database Vendor",
-	'' as "Software/Database Name & Version",
+    CASE
+        WHEN (tags ->> 'Software_Vendor' IS NOT NULL AND tags ->> 'Software_Vendor' != '') THEN tags ->> 'Software_Vendor'
+        ELSE ''
+    END as "Software/Database Vendor",	
+    CASE
+        WHEN (tags ->> 'Software_Version' IS NOT NULL AND tags ->> 'Software_Version' != '') THEN tags ->> 'Software_Version'
+        ELSE ''
+    END as "Software/Database Name & Version",		
 	'' as "Patch Level",
 	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
@@ -1289,8 +1317,16 @@ FROM
 	'AWS Directory Service' as "Asset Type",
 	'' as "Hardware Make/Model",
 	'' as "In Latest Scan",
-	type as "Software/Database Vendor",
-	edition as "Software/Database Name & Version",
+	--type as "Software/Database Vendor",
+	--edition as "Software/Database Name & Version",
+    CASE
+        WHEN (tags ->> 'Software_Vendor' IS NOT NULL AND tags ->> 'Software_Vendor' != '') THEN tags ->> 'Software_Vendor'
+        ELSE ''
+    END as "Software/Database Vendor",	
+    CASE
+        WHEN (tags ->> 'Software_Version' IS NOT NULL AND tags ->> 'Software_Version' != '') THEN tags ->> 'Software_Version'
+        ELSE ''
+    END as "Software/Database Name & Version",		
 	'' as "Patch Level",
 	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
@@ -1335,11 +1371,20 @@ select
   'AWS EC2' as "Asset Type",
   instance_type as "Hardware Make/Model",
   '' as "In Latest Scan",
-  CASE
-    WHEN ami_list.name is null THEN aws_ec2_instance.image_id
-    ELSE ami_list.name
-  END as "Software/Database Vendor",
-  '' as "Software/Database Name & Version",
+ --CASE
+ --   WHEN ami_list.name is null THEN aws_ec2_instance.image_id
+--    ELSE ami_list.name
+ -- END as "Software/Database Vendor",
+    CASE
+        WHEN (tags ->> 'Software_Vendor' IS NOT NULL AND tags ->> 'Software_Vendor' != '') THEN tags ->> 'Software_Vendor'
+		WHEN ami_list.name IS NOT NULL THEN ami_list.name
+		WHEN aws_ec2_instance.image_id IS NOT NULL THEN aws_ec2_instance.image_id		
+        ELSE tags ->> 'Software_Vendor'
+    END as "Software/Database Vendor",	
+    CASE
+        WHEN (tags ->> 'Software_Version' IS NULL OR tags ->> 'Software_Version' = '') THEN ''
+        ELSE tags ->> 'Software_Version'
+    END as "Software/Database Name & Version",
   '' as "Patch Level",
   tags ->> 'Diagram_Label' as "Diagram Label",
   tags ->> 'Comments' as "Comments",
@@ -1380,8 +1425,8 @@ where
   'AWS FSX' as "Asset Type",
   '' as "Hardware Make/Model",
   '' as "In Latest Scan",
-  '' as "Software/Database Vendor",
-  '' as "Software/Database Name & Version",
+"Software/Database Vendor",	
+"Software/Database Name & Version",
   '' as "Patch Level",
   '' as "Diagram Label",
   "Comments",
@@ -1420,8 +1465,14 @@ SELECT
   'AWS Internet Gateway' as "Asset Type",
   '' as "Hardware Make/Model",
   '' as "In Latest Scan",
-  '' as "Software/Database Vendor",
-  '' as "Software/Database Name & Version",
+    CASE
+        WHEN (tags ->> 'Software_Vendor' IS NOT NULL AND tags ->> 'Software_Vendor' != '') THEN tags ->> 'Software_Vendor'
+        ELSE ''
+    END as "Software/Database Vendor",	
+    CASE
+        WHEN (tags ->> 'Software_Version' IS NOT NULL AND tags ->> 'Software_Version' != '') THEN tags ->> 'Software_Version'
+        ELSE ''
+    END as "Software/Database Name & Version",		
   '' as "Patch Level",
   tags ->> 'Diagram_Label' as "Diagram Label",
   tags ->> 'Comments' as "Comments",
@@ -1458,8 +1509,14 @@ SELECT
 	'AWS NLB' as "Asset Type",
 	'' as "Hardware Make/Model",
 	'' as "In Latest Scan",
-	'' as "Software/Database Vendor",
-	'' as "Software/Database Name & Version",
+    CASE
+        WHEN (tags ->> 'Software_Vendor' IS NOT NULL AND tags ->> 'Software_Vendor' != '') THEN tags ->> 'Software_Vendor'
+        ELSE ''
+    END as "Software/Database Vendor",	
+    CASE
+        WHEN (tags ->> 'Software_Version' IS NOT NULL AND tags ->> 'Software_Version' != '') THEN tags ->> 'Software_Version'
+        ELSE ''
+    END as "Software/Database Name & Version",		
 	'' as "Patch Level",
 	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
@@ -1497,8 +1554,14 @@ FROM
 	'AWS Open Search' as "Asset Type",
 	'' as "Hardware Make/Model",
 	'' as "In Latest Scan",
-	'' as "Software/Database Vendor",
-	'' as "Software/Database Name & Version",
+    CASE
+        WHEN (tags ->> 'Software_Vendor' IS NOT NULL AND tags ->> 'Software_Vendor' != '') THEN tags ->> 'Software_Vendor'
+        ELSE ''
+    END as "Software/Database Vendor",	
+    CASE
+        WHEN (tags ->> 'Software_Version' IS NOT NULL AND tags ->> 'Software_Version' != '') THEN tags ->> 'Software_Version'
+        ELSE ''
+    END as "Software/Database Name & Version",		
 	'' as "Patch Level",
 	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
@@ -1540,8 +1603,18 @@ SELECT
 	'AWS RDS' as "Asset Type",
 	class as "Hardware Make/Model",
 	'' as "In Latest Scan",
-	engine as "Software/Database Vendor",
-	engine_version as "Software/Database Name & Version",
+	-- engine as "Software/Database Vendor",
+	-- engine_version as "Software/Database Name & Version",
+    CASE
+        WHEN (tags ->> 'Software_Vendor' IS NOT NULL AND tags ->> 'Software_Vendor' != '') THEN tags ->> 'Software_Vendor'
+		WHEN engine IS NOT NULL THEN engine
+        ELSE ''
+    END as "Software/Database Vendor",	
+    CASE
+        WHEN (tags ->> 'Software_Version' IS NOT NULL AND tags ->> 'Software_Version' != '') THEN tags ->> 'Software_Version'
+		WHEN engine_version IS NOT NULL THEN engine_version		
+        ELSE ''
+    END as "Software/Database Name & Version",	
 	'' as "Patch Level",
 	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
@@ -1572,8 +1645,14 @@ SELECT
 	'AWS S3' as "Asset Type",
 	'' as "Hardware Make/Model",
 	'' as "In Latest Scan",
-	'' as "Software/Database Vendor",
-	'' as "Software/Database Name & Version",
+    CASE
+        WHEN (tags ->> 'Software_Vendor' IS NOT NULL AND tags ->> 'Software_Vendor' != '') THEN tags ->> 'Software_Vendor'
+        ELSE ''
+    END as "Software/Database Vendor",	
+    CASE
+        WHEN (tags ->> 'Software_Version' IS NOT NULL AND tags ->> 'Software_Version' != '') THEN tags ->> 'Software_Version'
+        ELSE ''
+    END as "Software/Database Name & Version",	
 	'' as "Patch Level",
 	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
@@ -1611,8 +1690,14 @@ SELECT
 	'AWS VPC Subnet' as "Asset Type",
 	'' as "Hardware Make/Model",
 	'' as "In Latest Scan",
-	'' as "Software/Database Vendor",
-	'' as "Software/Database Name & Version",
+    CASE
+        WHEN (tags ->> 'Software_Vendor' IS NOT NULL AND tags ->> 'Software_Vendor' != '') THEN tags ->> 'Software_Vendor'
+        ELSE ''
+    END as "Software/Database Vendor",	
+    CASE
+        WHEN (tags ->> 'Software_Version' IS NOT NULL AND tags ->> 'Software_Version' != '') THEN tags ->> 'Software_Version'
+        ELSE ''
+    END as "Software/Database Name & Version",	
 	'' as "Patch Level",
 	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
@@ -1654,8 +1739,14 @@ SELECT
 	'AWS VPC NAT Gateway' as "Asset Type",
 	'' as "Hardware Make/Model",
 	'' as "In Latest Scan",
-	'' as "Software/Database Vendor",
-	'' as "Software/Database Name & Version",
+    CASE
+        WHEN (tags ->> 'Software_Vendor' IS NOT NULL AND tags ->> 'Software_Vendor' != '') THEN tags ->> 'Software_Vendor'
+        ELSE ''
+    END as "Software/Database Vendor",	
+    CASE
+        WHEN (tags ->> 'Software_Version' IS NOT NULL AND tags ->> 'Software_Version' != '') THEN tags ->> 'Software_Version'
+        ELSE ''
+    END as "Software/Database Name & Version",	
 	'' as "Patch Level",
 	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
@@ -1671,6 +1762,96 @@ SELECT
 FROM
 	aws_vpc_nat_gateway
 	left join vpc_list ON vpc_list.vpc_id = aws_vpc_nat_gateway.vpc_id
+	
+UNION 
+
+-- ECR Repository Inventory
+  SELECT DISTINCT
+	repository_name as "Unique Asset Identifier",
+	'' as "IPv4 or IPv6 Address",
+		'Yes' as "Virtual",
+    tags ->> 'Public' as "Public",		
+	--'' as "Public",
+	'' as "DNS Name or URL",
+	'' as "NetBIOS Name",
+	'' as "MAC Address",
+	tags ->> 'Authenticated_Scan' as "Authenticated Scan",
+	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
+	'' as "OS Name and Version",
+	'' as "Location",
+	'AWS ECR Repository' as "Asset Type",
+	'' as "Hardware Make/Model",
+	'' as "In Latest Scan",
+    CASE
+        WHEN (tags ->> 'Software_Vendor' IS NOT NULL AND tags ->> 'Software_Vendor' != '') THEN tags ->> 'Software_Vendor'
+        ELSE ''
+    END as "Software/Database Vendor",	
+    CASE
+        WHEN (tags ->> 'Software_Version' IS NOT NULL AND tags ->> 'Software_Version' != '') THEN tags ->> 'Software_Version'
+        ELSE ''
+    END as "Software/Database Name & Version",	
+	'' as "Patch Level",
+	tags ->> 'Diagram_Label' as "Diagram Label",
+	tags ->> 'Comments' as "Comments",
+	repository_uri as "Serial #/Asset Tag#",
+  --CASE
+   -- WHEN vpc_list.title is null THEN aws_ec2_application_load_balancer.vpc_id
+  --  ELSE vpc_list.title
+--  END as "VLAN/Network ID",
+	'' as "VLAN/Network ID",
+	tags ->> 'Application_Owner' as "Application Owner",
+	tags ->> 'System_Owner' as "System Owner",
+	tags ->> 'Function' as "Function",
+	tags ->> 'End_Of_life' as "End-of-Life"
+FROM
+	aws_ecr_repository repo
+	
+	UNION
+	
+	--AWS ECR Images Inventory
+	
+	  SELECT DISTINCT
+	image_uri as "Unique Asset Identifier",
+	'' as "IPv4 or IPv6 Address",
+		'Yes' as "Virtual",
+	'' as "Public",
+	'' as "DNS Name or URL",
+	'' as "NetBIOS Name",
+	'' as "MAC Address",
+	'' as "Authenticated Scan",
+	'' as "Baseline Configuration Name",
+	'' as "OS Name and Version",
+	'' as "Location",
+	'AWS ECR Image' as "Asset Type",
+	'' as "Hardware Make/Model",
+	'' as "In Latest Scan",
+    CASE
+        WHEN (image_tags ->> 'Software_Vendor' IS NOT NULL AND image_tags ->> 'Software_Vendor' != '') THEN image_tags ->> 'Software_Vendor'
+        ELSE ''
+    END as "Software/Database Vendor",	
+    CASE
+        WHEN (image_tags ->> 'Software_Version' IS NOT NULL AND image_tags ->> 'Software_Version' != '') THEN image_tags ->> 'Software_Version'
+		WHEN (image_tags ->> 'Software_Version' IS NULL OR image_tags ->> 'Software_Version' = '') THEN split_part(image_uri, ':', 2)
+        ELSE ''
+    END as "Software/Database Name & Version",	
+	-- split_part(image_uri, ':', 2) as "Software/Database Name & Version",
+	'' as "Patch Level",
+	'' as "Diagram Label",
+	'' as "Comments",
+	image_uri as "Serial #/Asset Tag#",
+  --CASE
+   -- WHEN vpc_list.title is null THEN aws_ec2_application_load_balancer.vpc_id
+  --  ELSE vpc_list.title
+--  END as "VLAN/Network ID",
+	'' as "VLAN/Network ID",
+	'' as "Application Owner",
+	'' as "System Owner",
+	'' as "Function",
+	'' as "End-of-Life"
+FROM
+	images
+WHERE image_tag = 'latest'
+
 
 
 
@@ -1779,8 +1960,14 @@ WITH vpc_list as (
       'AWS FSX' as "Asset Type",
       '' as "Hardware Make/Model",
       '' as "In Latest Scan",
-      '' as "Software/Database Vendor",
-      '' as "Software/Database Name & Version",
+    CASE
+        WHEN (tags ->> 'Software_Vendor' IS NOT NULL AND tags ->> 'Software_Vendor' != '') THEN tags ->> 'Software_Vendor'
+        ELSE ''
+    END as "Software/Database Vendor",	
+    CASE
+        WHEN (tags ->> 'Software_Version' IS NOT NULL AND tags ->> 'Software_Version' != '') THEN tags ->> 'Software_Version'
+        ELSE ''
+    END as "Software/Database Name & Version",		
       '' as "Patch Level",
       tags ->> 'Diagram_Label' as "Diagram Label",
       tags ->> 'Comments' as "Comments",
@@ -1796,7 +1983,17 @@ WITH vpc_list as (
     FROM
       aws_fsx_file_system
       INNER join vpc_list ON vpc_list.vpc_id = aws_fsx_file_system.vpc_id
-  )
+  ),
+  
+  images as (
+select
+  *,
+	jsonb_array_elements_text(image_tags) as "image_tag"
+from
+  aws_ecr_image
+
+)  
+  
   
   --Application Load Balancer
   SELECT
@@ -1815,8 +2012,14 @@ WITH vpc_list as (
 	'AWS ALB' as "Asset Type",
 	'' as "Hardware Make/Model",
 	'' as "In Latest Scan",
-	'' as "Software/Database Vendor",
-	'' as "Software/Database Name & Version",
+    CASE
+        WHEN (tags ->> 'Software_Vendor' IS NOT NULL AND tags ->> 'Software_Vendor' != '') THEN tags ->> 'Software_Vendor'
+        ELSE ''
+    END as "Software/Database Vendor",	
+    CASE
+        WHEN (tags ->> 'Software_Version' IS NOT NULL AND tags ->> 'Software_Version' != '') THEN tags ->> 'Software_Version'
+        ELSE ''
+    END as "Software/Database Name & Version",		
 	'' as "Patch Level",
 	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
@@ -1856,8 +2059,14 @@ SELECT
 	'AWS Load Balancer' as "Asset Type",
 	'' as "Hardware Make/Model",
 	'' as "In Latest Scan",
-	'' as "Software/Database Vendor",
-	'' as "Software/Database Name & Version",
+    CASE
+        WHEN (tags ->> 'Software_Vendor' IS NOT NULL AND tags ->> 'Software_Vendor' != '') THEN tags ->> 'Software_Vendor'
+        ELSE ''
+    END as "Software/Database Vendor",	
+    CASE
+        WHEN (tags ->> 'Software_Version' IS NOT NULL AND tags ->> 'Software_Version' != '') THEN tags ->> 'Software_Version'
+        ELSE ''
+    END as "Software/Database Name & Version",		
 	'' as "Patch Level",
 	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
@@ -1898,8 +2107,16 @@ FROM
 	'AWS Directory Service' as "Asset Type",
 	'' as "Hardware Make/Model",
 	'' as "In Latest Scan",
-	type as "Software/Database Vendor",
-	edition as "Software/Database Name & Version",
+	--type as "Software/Database Vendor",
+	--edition as "Software/Database Name & Version",
+    CASE
+        WHEN (tags ->> 'Software_Vendor' IS NOT NULL AND tags ->> 'Software_Vendor' != '') THEN tags ->> 'Software_Vendor'
+        ELSE ''
+    END as "Software/Database Vendor",	
+    CASE
+        WHEN (tags ->> 'Software_Version' IS NOT NULL AND tags ->> 'Software_Version' != '') THEN tags ->> 'Software_Version'
+        ELSE ''
+    END as "Software/Database Name & Version",		
 	'' as "Patch Level",
 	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
@@ -1944,11 +2161,20 @@ select
   'AWS EC2' as "Asset Type",
   instance_type as "Hardware Make/Model",
   '' as "In Latest Scan",
-  CASE
-    WHEN ami_list.name is null THEN aws_ec2_instance.image_id
-    ELSE ami_list.name
-  END as "Software/Database Vendor",
-  '' as "Software/Database Name & Version",
+ --CASE
+ --   WHEN ami_list.name is null THEN aws_ec2_instance.image_id
+--    ELSE ami_list.name
+ -- END as "Software/Database Vendor",
+    CASE
+        WHEN (tags ->> 'Software_Vendor' IS NOT NULL AND tags ->> 'Software_Vendor' != '') THEN tags ->> 'Software_Vendor'
+		WHEN ami_list.name IS NOT NULL THEN ami_list.name
+		WHEN aws_ec2_instance.image_id IS NOT NULL THEN aws_ec2_instance.image_id		
+        ELSE tags ->> 'Software_Vendor'
+    END as "Software/Database Vendor",	
+    CASE
+        WHEN (tags ->> 'Software_Version' IS NULL OR tags ->> 'Software_Version' = '') THEN ''
+        ELSE tags ->> 'Software_Version'
+    END as "Software/Database Name & Version",
   '' as "Patch Level",
   tags ->> 'Diagram_Label' as "Diagram Label",
   tags ->> 'Comments' as "Comments",
@@ -1989,8 +2215,8 @@ where
   'AWS FSX' as "Asset Type",
   '' as "Hardware Make/Model",
   '' as "In Latest Scan",
-  '' as "Software/Database Vendor",
-  '' as "Software/Database Name & Version",
+"Software/Database Vendor",	
+"Software/Database Name & Version",
   '' as "Patch Level",
   '' as "Diagram Label",
   "Comments",
@@ -2029,8 +2255,14 @@ SELECT
   'AWS Internet Gateway' as "Asset Type",
   '' as "Hardware Make/Model",
   '' as "In Latest Scan",
-  '' as "Software/Database Vendor",
-  '' as "Software/Database Name & Version",
+    CASE
+        WHEN (tags ->> 'Software_Vendor' IS NOT NULL AND tags ->> 'Software_Vendor' != '') THEN tags ->> 'Software_Vendor'
+        ELSE ''
+    END as "Software/Database Vendor",	
+    CASE
+        WHEN (tags ->> 'Software_Version' IS NOT NULL AND tags ->> 'Software_Version' != '') THEN tags ->> 'Software_Version'
+        ELSE ''
+    END as "Software/Database Name & Version",		
   '' as "Patch Level",
   tags ->> 'Diagram_Label' as "Diagram Label",
   tags ->> 'Comments' as "Comments",
@@ -2067,8 +2299,14 @@ SELECT
 	'AWS NLB' as "Asset Type",
 	'' as "Hardware Make/Model",
 	'' as "In Latest Scan",
-	'' as "Software/Database Vendor",
-	'' as "Software/Database Name & Version",
+    CASE
+        WHEN (tags ->> 'Software_Vendor' IS NOT NULL AND tags ->> 'Software_Vendor' != '') THEN tags ->> 'Software_Vendor'
+        ELSE ''
+    END as "Software/Database Vendor",	
+    CASE
+        WHEN (tags ->> 'Software_Version' IS NOT NULL AND tags ->> 'Software_Version' != '') THEN tags ->> 'Software_Version'
+        ELSE ''
+    END as "Software/Database Name & Version",		
 	'' as "Patch Level",
 	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
@@ -2106,8 +2344,14 @@ FROM
 	'AWS Open Search' as "Asset Type",
 	'' as "Hardware Make/Model",
 	'' as "In Latest Scan",
-	'' as "Software/Database Vendor",
-	'' as "Software/Database Name & Version",
+    CASE
+        WHEN (tags ->> 'Software_Vendor' IS NOT NULL AND tags ->> 'Software_Vendor' != '') THEN tags ->> 'Software_Vendor'
+        ELSE ''
+    END as "Software/Database Vendor",	
+    CASE
+        WHEN (tags ->> 'Software_Version' IS NOT NULL AND tags ->> 'Software_Version' != '') THEN tags ->> 'Software_Version'
+        ELSE ''
+    END as "Software/Database Name & Version",		
 	'' as "Patch Level",
 	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
@@ -2149,8 +2393,18 @@ SELECT
 	'AWS RDS' as "Asset Type",
 	class as "Hardware Make/Model",
 	'' as "In Latest Scan",
-	engine as "Software/Database Vendor",
-	engine_version as "Software/Database Name & Version",
+	-- engine as "Software/Database Vendor",
+	-- engine_version as "Software/Database Name & Version",
+    CASE
+        WHEN (tags ->> 'Software_Vendor' IS NOT NULL AND tags ->> 'Software_Vendor' != '') THEN tags ->> 'Software_Vendor'
+		WHEN engine IS NOT NULL THEN engine
+        ELSE ''
+    END as "Software/Database Vendor",	
+    CASE
+        WHEN (tags ->> 'Software_Version' IS NOT NULL AND tags ->> 'Software_Version' != '') THEN tags ->> 'Software_Version'
+		WHEN engine_version IS NOT NULL THEN engine_version		
+        ELSE ''
+    END as "Software/Database Name & Version",	
 	'' as "Patch Level",
 	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
@@ -2181,8 +2435,14 @@ SELECT
 	'AWS S3' as "Asset Type",
 	'' as "Hardware Make/Model",
 	'' as "In Latest Scan",
-	'' as "Software/Database Vendor",
-	'' as "Software/Database Name & Version",
+    CASE
+        WHEN (tags ->> 'Software_Vendor' IS NOT NULL AND tags ->> 'Software_Vendor' != '') THEN tags ->> 'Software_Vendor'
+        ELSE ''
+    END as "Software/Database Vendor",	
+    CASE
+        WHEN (tags ->> 'Software_Version' IS NOT NULL AND tags ->> 'Software_Version' != '') THEN tags ->> 'Software_Version'
+        ELSE ''
+    END as "Software/Database Name & Version",	
 	'' as "Patch Level",
 	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
@@ -2220,8 +2480,14 @@ SELECT
 	'AWS VPC Subnet' as "Asset Type",
 	'' as "Hardware Make/Model",
 	'' as "In Latest Scan",
-	'' as "Software/Database Vendor",
-	'' as "Software/Database Name & Version",
+    CASE
+        WHEN (tags ->> 'Software_Vendor' IS NOT NULL AND tags ->> 'Software_Vendor' != '') THEN tags ->> 'Software_Vendor'
+        ELSE ''
+    END as "Software/Database Vendor",	
+    CASE
+        WHEN (tags ->> 'Software_Version' IS NOT NULL AND tags ->> 'Software_Version' != '') THEN tags ->> 'Software_Version'
+        ELSE ''
+    END as "Software/Database Name & Version",	
 	'' as "Patch Level",
 	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
@@ -2263,8 +2529,14 @@ SELECT
 	'AWS VPC NAT Gateway' as "Asset Type",
 	'' as "Hardware Make/Model",
 	'' as "In Latest Scan",
-	'' as "Software/Database Vendor",
-	'' as "Software/Database Name & Version",
+    CASE
+        WHEN (tags ->> 'Software_Vendor' IS NOT NULL AND tags ->> 'Software_Vendor' != '') THEN tags ->> 'Software_Vendor'
+        ELSE ''
+    END as "Software/Database Vendor",	
+    CASE
+        WHEN (tags ->> 'Software_Version' IS NOT NULL AND tags ->> 'Software_Version' != '') THEN tags ->> 'Software_Version'
+        ELSE ''
+    END as "Software/Database Name & Version",	
 	'' as "Patch Level",
 	tags ->> 'Diagram_Label' as "Diagram Label",
 	tags ->> 'Comments' as "Comments",
@@ -2280,6 +2552,96 @@ SELECT
 FROM
 	aws_vpc_nat_gateway
 	left join vpc_list ON vpc_list.vpc_id = aws_vpc_nat_gateway.vpc_id
+	
+UNION 
+
+-- ECR Repository Inventory
+  SELECT DISTINCT
+	repository_name as "Unique Asset Identifier",
+	'' as "IPv4 or IPv6 Address",
+		'Yes' as "Virtual",
+    tags ->> 'Public' as "Public",		
+	--'' as "Public",
+	'' as "DNS Name or URL",
+	'' as "NetBIOS Name",
+	'' as "MAC Address",
+	tags ->> 'Authenticated_Scan' as "Authenticated Scan",
+	tags ->> 'Baseline_Configuration_Name' as "Baseline Configuration Name",
+	'' as "OS Name and Version",
+	'' as "Location",
+	'AWS ECR Repository' as "Asset Type",
+	'' as "Hardware Make/Model",
+	'' as "In Latest Scan",
+    CASE
+        WHEN (tags ->> 'Software_Vendor' IS NOT NULL AND tags ->> 'Software_Vendor' != '') THEN tags ->> 'Software_Vendor'
+        ELSE ''
+    END as "Software/Database Vendor",	
+    CASE
+        WHEN (tags ->> 'Software_Version' IS NOT NULL AND tags ->> 'Software_Version' != '') THEN tags ->> 'Software_Version'
+        ELSE ''
+    END as "Software/Database Name & Version",	
+	'' as "Patch Level",
+	tags ->> 'Diagram_Label' as "Diagram Label",
+	tags ->> 'Comments' as "Comments",
+	repository_uri as "Serial #/Asset Tag#",
+  --CASE
+   -- WHEN vpc_list.title is null THEN aws_ec2_application_load_balancer.vpc_id
+  --  ELSE vpc_list.title
+--  END as "VLAN/Network ID",
+	'' as "VLAN/Network ID",
+	tags ->> 'Application_Owner' as "Application Owner",
+	tags ->> 'System_Owner' as "System Owner",
+	tags ->> 'Function' as "Function",
+	tags ->> 'End_Of_life' as "End-of-Life"
+FROM
+	aws_ecr_repository repo
+	
+	UNION
+	
+	--AWS ECR Images Inventory
+	
+	  SELECT DISTINCT
+	image_uri as "Unique Asset Identifier",
+	'' as "IPv4 or IPv6 Address",
+		'Yes' as "Virtual",
+	'' as "Public",
+	'' as "DNS Name or URL",
+	'' as "NetBIOS Name",
+	'' as "MAC Address",
+	'' as "Authenticated Scan",
+	'' as "Baseline Configuration Name",
+	'' as "OS Name and Version",
+	'' as "Location",
+	'AWS ECR Image' as "Asset Type",
+	'' as "Hardware Make/Model",
+	'' as "In Latest Scan",
+    CASE
+        WHEN (image_tags ->> 'Software_Vendor' IS NOT NULL AND image_tags ->> 'Software_Vendor' != '') THEN image_tags ->> 'Software_Vendor'
+        ELSE ''
+    END as "Software/Database Vendor",	
+    CASE
+        WHEN (image_tags ->> 'Software_Version' IS NOT NULL AND image_tags ->> 'Software_Version' != '') THEN image_tags ->> 'Software_Version'
+		WHEN (image_tags ->> 'Software_Version' IS NULL OR image_tags ->> 'Software_Version' = '') THEN split_part(image_uri, ':', 2)
+        ELSE ''
+    END as "Software/Database Name & Version",	
+	-- split_part(image_uri, ':', 2) as "Software/Database Name & Version",
+	'' as "Patch Level",
+	'' as "Diagram Label",
+	'' as "Comments",
+	image_uri as "Serial #/Asset Tag#",
+  --CASE
+   -- WHEN vpc_list.title is null THEN aws_ec2_application_load_balancer.vpc_id
+  --  ELSE vpc_list.title
+--  END as "VLAN/Network ID",
+	'' as "VLAN/Network ID",
+	'' as "Application Owner",
+	'' as "System Owner",
+	'' as "Function",
+	'' as "End-of-Life"
+FROM
+	images
+WHERE image_tag = 'latest'
+
 
 
 	
