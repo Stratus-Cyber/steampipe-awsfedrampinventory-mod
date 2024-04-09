@@ -1428,9 +1428,9 @@ where
 "Software/Database Vendor",	
 "Software/Database Name & Version",
   '' as "Patch Level",
-  '' as "Diagram Label",
+  "Diagram Label",
   "Comments",
-  '' as "Serial #/Asset Tag#",
+ "Serial #/Asset Tag#",
   "VLAN/Network ID",
   "Application Owner",
   "System Owner",
@@ -1851,6 +1851,7 @@ FROM
 FROM
 	images
 WHERE image_tag = 'latest'
+
 
 
 
@@ -2218,9 +2219,9 @@ where
 "Software/Database Vendor",	
 "Software/Database Name & Version",
   '' as "Patch Level",
-  '' as "Diagram Label",
+  "Diagram Label",
   "Comments",
-  '' as "Serial #/Asset Tag#",
+ "Serial #/Asset Tag#",
   "VLAN/Network ID",
   "Application Owner",
   "System Owner",
@@ -2641,6 +2642,7 @@ FROM
 FROM
 	images
 WHERE image_tag = 'latest'
+
 
 
 
